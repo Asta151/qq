@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>FitTrainer - Personal Fitness Trainer</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#111827">
+<meta name="description" content="Calculate calories, plan workouts, track nutrition, water intake and progress.">
+
+<!-- iOS install support -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FitTrainer">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: #f4f6f8;
+    color: #1f2937;
+    padding-bottom: calc(74px + env(safe-area-inset-bottom));
+}
+
+/* ============ HEADER ============ */
+
+header {
+    background: #111827;
+    color: white;
+    padding: 16px 6%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    gap: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.15);
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    white-space: nowrap;
+    cursor: pointer;
+    letter-spacing: .3px;
+}
+
+.logo span {
+    color: #22c55e;
+}
+
+.install-btn {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    background: #22c55e;
+    color: #06210f;
+    border: none;
+    padding: 9px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap;
+    margin: 0;
+}
+
+.install-btn:hover {
+    background: #16a34a;
+    color: white;
+}
+
+.install-btn.show {
+    display: inline-flex;
+}
+
+/* ============ BOTTOM NAV (app style) ============ */
+
+.bottom-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 300;
+    background: rgba(255,255,255,.98);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 8px 4px calc(8px + env(safe-area-inset-bottom));
+    box-shadow: 0 -4px 18px rgba(0,0,0,.08);
+}
+
+.bottom-nav a {
+    flex: 1;
+    max-width: 96px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    text-decoration: none;
+    color: #9ca3af;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 2px;
+    border-radius: 14px;
+    transition: color .15s;
+}
+
+.bottom-nav a .nav-icon {
+    font-size: 21px;
+    width: 40px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    transition: background .2s, transform .15s;
+}
+
+.bottom-nav a.active {
+    color: #16a34a;
+}
+
+.bottom-nav a.active .nav-icon {
+    background: #dcfce7;
+    transform: translateY(-2px);
+}
+
+.bottom-nav a:active .nav-icon {
+    transform: scale(.9);
+}
+
+/* ============ PAGES ============ */
+
+.page {
+    display: none;
+    animation: fadeIn .25s ease;
+}
+
+.page.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.page-top-space {
+    height: 28px;
+}
+
+.install-banner {
+    max-width: 1100px;
+    width: 90%;
+    margin: 24px auto 0;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.1);
+    padding: 16px 22px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.install-banner.show {
+    display: flex;
+}
+
+.install-banner .text b {
+    display: block;
+    font-size: 15px;
+}
+
+.install-banner .text span {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.home-greeting {
+    max-width: 1100px;
+    width: 90%;
+    margin: 30px auto 0;
+}
+
+.home-greeting h1 {
+    font-size: 24px;
+    color: #111827;
+}
+
+.home-greeting p {
+    color: #6b7280;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.quick-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 10px;
+}
+
+.quick-links a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.quick-card {
+    background: white;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 5px 20px rgba(0,0,0,.07);
+    text-align: center;
+    transition: .2s;
+    height: 100%;
+    border: 1px solid transparent;
+}
+
+.quick-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 26px rgba(0,0,0,.12);
+    border-color: #dcfce7;
+}
+
+.quick-card .icon {
+    font-size: 30px;
+    margin-bottom: 8px;
+}
+
+.quick-card h3 {
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.quick-card p {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.container {
+    width: 90%;
+    max-width: 1100px;
+    margin: 35px auto;
+}
+
+.section-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 18px;
+}
+
+.card {
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 5px 20px rgba(0,0,0,.07);
+}
+
+.card h3 {
+    margin-bottom: 10px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+}
+
+label {
+    font-weight: bold;
+    font-size: 13px;
+    display: block;
+    margin-bottom: 6px;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: .3px;
+}
+
+input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    font-size: 15px;
+    background: white;
+}
+
+input:focus {
+    outline: none;
+    border-color: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34,197,94,.15);
+}
+
+button {
+    background: #22c55e;
+    color: white;
+    border: none;
+    padding: 13px 22px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 15px;
+    font-size: 14px;
+    transition: transform .1s, background .15s;
+}
+
+button:hover {
+    background: #16a34a;
+}
+
+button:active {
+    transform: scale(.97);
+}
+
+.result {
+    margin-top: 20px;
+    padding: 20px;
+    background: #ecfdf5;
+    border-left: 5px solid #22c55e;
+    border-radius: 10px;
+}
+
+.result.error {
+    background: #fef2f2;
+    border-left-color: #ef4444;
+    color: #991b1b;
+    font-weight: bold;
+}
+
+.metric {
+    font-size: 30px;
+    font-weight: bold;
+    color: #16a34a;
+}
+
+.exercise {
+    border-left: 4px solid #22c55e;
+    margin-bottom: 15px;
+    padding: 15px;
+    background: white;
+    border-radius: 10px;
+}
+
+.exercise h3 {
+    margin-bottom: 6px;
+}
+
+.exercise p {
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+.progress-bar {
+    background: #e5e7eb;
+    height: 18px;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.progress-fill {
+    background: #22c55e;
+    height: 100%;
+    width: 0%;
+    transition: .4s;
+}
+
+.water {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.water button {
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    border-radius: 50%;
+    margin-top: 0;
+    font-size: 18px;
+}
+
+.water button.filled {
+    background: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22,163,74,.2);
+}
+
+footer {
+    background: #111827;
+    color: #9ca3af;
+    text-align: center;
+    padding: 30px;
+    margin-top: 50px;
+}
+
+/* ============ CUSTOM SELECT ============ */
+
+.custom-select {
+    position: relative;
+    user-select: none;
+}
+
+.custom-select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    font-size: 15px;
+    background: white;
+    cursor: pointer;
+    transition: .15s;
+}
+
+.custom-select-trigger:hover {
+    border-color: #22c55e;
+}
+
+.custom-select.open .custom-select-trigger,
+.custom-select-trigger:focus-visible {
+    outline: none;
+    border-color: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34,197,94,.15);
+}
+
+.custom-select-trigger span.label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.custom-select-trigger .arrow {
+    flex: none;
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid #6b7280;
+    border-bottom: 2px solid #6b7280;
+    transform: rotate(45deg);
+    transition: transform .2s;
+    margin-top: -4px;
+}
+
+.custom-select.open .custom-select-trigger .arrow {
+    transform: rotate(-135deg);
+    margin-top: 4px;
+}
+
+.custom-select-options {
+    list-style: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 12px 28px rgba(0,0,0,.15);
+    max-height: 260px;
+    overflow-y: auto;
+    z-index: 50;
+    opacity: 0;
+    transform: translateY(-6px);
+    pointer-events: none;
+    transition: opacity .15s, transform .15s;
+    padding: 6px;
+}
+
+.custom-select.open .custom-select-options {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.custom-select-option {
+    padding: 11px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.custom-select-option:hover,
+.custom-select-option.highlighted {
+    background: #f0fdf4;
+}
+
+.custom-select-option.selected {
+    background: #ecfdf5;
+    color: #16a34a;
+    font-weight: bold;
+}
+
+.custom-select-option .check {
+    color: #22c55e;
+    font-weight: bold;
+    opacity: 0;
+}
+
+.custom-select-option.selected .check {
+    opacity: 1;
+}
+
+/* ============ INSTALL MODAL ============ */
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(17,24,39,.55);
+    z-index: 500;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.modal-overlay.show {
+    display: flex;
+}
+
+.modal-sheet {
+    background: white;
+    width: 100%;
+    max-width: 460px;
+    border-radius: 18px 18px 0 0;
+    padding: 26px 24px 30px;
+    animation: slideUp .25s ease;
+}
+
+@media(min-width:600px) {
+    .modal-overlay {
+        align-items: center;
+    }
+    .modal-sheet {
+        border-radius: 18px;
+    }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-sheet h3 {
+    margin-bottom: 12px;
+}
+
+.modal-sheet ol {
+    margin: 14px 0 18px 20px;
+    line-height: 1.9;
+    font-size: 14px;
+}
+
+.modal-sheet .share-icon {
+    display: inline-block;
+    background: #e5e7eb;
+    border-radius: 6px;
+    padding: 1px 7px;
+    font-weight: bold;
+}
+
+.modal-close {
+    background: #111827;
+    width: 100%;
+}
+
+.modal-close:hover {
+    background: #1f2937;
+}
+
+@media(max-width:700px) {
+    .container {
+        width: 94%;
+    }
+
+    .home-greeting, .install-banner {
+        width: 94%;
+    }
+}
+
+@media(min-width:900px) {
+    .bottom-nav {
+        max-width: 480px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 20px;
+        bottom: 16px;
+        border: 1px solid #e5e7eb;
+    }
+
+    body {
+        padding-bottom: calc(90px + env(safe-area-inset-bottom));
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo" onclick="location.hash='home'">Fit<span>Trainer</span></div>
+    <button class="install-btn" id="installBtn" onclick="handleInstallClick()">
+        ⬇ Install App
+    </button>
+</header>
+
+<!-- ======================================================= -->
+<!-- HOME PAGE -->
+<!-- ======================================================= -->
+<div class="page" id="home">
+
+<div class="page-top-space"></div>
+
+<div class="home-greeting">
+    <h1>👋 Welcome back</h1>
+    <p>Here's your fitness dashboard for today.</p>
+</div>
+
+<div class="install-banner" id="installBanner">
+    <div class="text">
+        <b>📲 Install FitTrainer on your device</b>
+        <span>Get the full-screen app experience, even offline.</span>
+    </div>
+    <button class="install-btn show" style="position:static" onclick="handleInstallClick()">⬇ Install</button>
+</div>
+
+<section class="container">
+
+<div class="quick-links">
+
+<a href="#calculator">
+<div class="quick-card">
+<div class="icon">🔥</div>
+<h3>Calculator</h3>
+<p>BMR, TDEE &amp; BMI</p>
+</div>
+</a>
+
+<a href="#workout">
+<div class="quick-card">
+<div class="icon">🏋️</div>
+<h3>Workout</h3>
+<p>Weekly plan &amp; exercise library</p>
+</div>
+</a>
+
+<a href="#food">
+<div class="quick-card">
+<div class="icon">🍎</div>
+<h3>Food</h3>
+<p>Calorie calculator</p>
+</div>
+</a>
+
+<a href="#progress">
+<div class="quick-card">
+<div class="icon">📊</div>
+<h3>Progress</h3>
+<p>Water &amp; weight tracking</p>
+</div>
+</a>
+
+</div>
+
+</section>
+
+<section class="container">
+<div class="card" style="text-align:center">
+
+<h2>🔥 Daily Motivation</h2>
+
+<p id="motivation" style="margin-top:15px;line-height:1.6;">
+Your body can achieve what your mind believes.
+</p>
+
+<button onclick="newMotivation()">New Motivation</button>
+
+</div>
+</section>
+
+</div>
+
+
+<!-- ======================================================= -->
+<!-- CALCULATOR PAGE -->
+<!-- ======================================================= -->
+<div class="page" id="calculator">
+
+<div class="page-top-space"></div>
+
+<section class="container" style="margin-top:0;">
+
+<h2 class="section-title">🔥 BMR &amp; TDEE Calculator</h2>
+
+<div class="card">
+
+<div class="form-grid">
+
+<div>
+<label>Gender</label>
+<select id="gender">
+<option value="male">Male</option>
+<option value="female">Female</option>
+</select>
+</div>
+
+<div>
+<label>Age</label>
+<input type="number" id="age" placeholder="25" min="1" max="120" inputmode="numeric">
+</div>
+
+<div>
+<label>Weight (kg)</label>
+<input type="number" id="weight" placeholder="70" min="1" max="400" step="0.1" inputmode="decimal">
+</div>
+
+<div>
+<label>Height (cm)</label>
+<input type="number" id="height" placeholder="175" min="50" max="260" step="0.1" inputmode="decimal">
+</div>
+
+<div>
+<label>Activity Level</label>
+<select id="activity">
+<option value="1.2">Sedentary - little exercise</option>
+<option value="1.375">Light - 1-3 days/week</option>
+<option value="1.55">Moderate - 3-5 days/week</option>
+<option value="1.725">Active - 6-7 days/week</option>
+<option value="1.9">Very Active - hard training</option>
+</select>
+</div>
+
+<div>
+<label>Goal</label>
+<select id="goal">
+<option value="-500">Lose Fast</option>
+<option value="-300">Lose Steady</option>
+<option value="0">Maintain Weight</option>
+<option value="250">Lean Gain</option>
+<option value="500">Gain Weight</option>
+</select>
+</div>
+
+</div>
+
+<button onclick="calculateFitness()">Calculate</button>
+
+<div id="fitnessResult"></div>
+
+</div>
+</section>
+
+
+<section class="container">
+
+<h2 class="section-title">⚖️ BMI Calculator</h2>
+
+<div class="card">
+
+<div class="form-grid">
+
+<div>
+<label>Weight (kg)</label>
+<input type="number" id="bmiWeight" placeholder="70" min="1" max="400" step="0.1" inputmode="decimal">
+</div>
+
+<div>
+<label>Height (cm)</label>
+<input type="number" id="bmiHeight" placeholder="175" min="50" max="260" step="0.1" inputmode="decimal">
+</div>
+
+</div>
+
+<button onclick="calculateBMI()">Calculate BMI</button>
+
+<div id="bmiResult"></div>
+
+</div>
+
+</section>
+
+</div>
+
+
+<!-- ======================================================= -->
+<!-- WORKOUT PAGE -->
+<!-- ======================================================= -->
+<div class="page" id="workout">
+
+<div class="page-top-space"></div>
+
+<section class="container" style="margin-top:0;">
+
+<h2 class="section-title">🏋️ Workout Planner</h2>
+
+<div class="card-grid">
+
+<div class="card">
+<h3>Monday - Chest</h3>
+<p>Bench Press - 4 × 10</p>
+<p>Incline Dumbbell Press - 3 × 12</p>
+<p>Chest Fly - 3 × 12</p>
+<p>Push Ups - 3 × 15</p>
+</div>
+
+<div class="card">
+<h3>Tuesday - Back</h3>
+<p>Lat Pulldown - 4 × 10</p>
+<p>Barbell Row - 3 × 10</p>
+<p>Seated Cable Row - 3 × 12</p>
+<p>Deadlift - 3 × 8</p>
+</div>
+
+<div class="card">
+<h3>Wednesday - Legs</h3>
+<p>Squats - 4 × 10</p>
+<p>Leg Press - 3 × 12</p>
+<p>Leg Curl - 3 × 12</p>
+<p>Calf Raise - 4 × 15</p>
+</div>
+
+<div class="card">
+<h3>Thursday - Shoulders</h3>
+<p>Shoulder Press - 4 × 10</p>
+<p>Lateral Raise - 3 × 15</p>
+<p>Front Raise - 3 × 12</p>
+<p>Face Pull - 3 × 15</p>
+</div>
+
+<div class="card">
+<h3>Friday - Arms</h3>
+<p>Barbell Curl - 3 × 12</p>
+<p>Hammer Curl - 3 × 12</p>
+<p>Tricep Pushdown - 3 × 12</p>
+<p>Skull Crusher - 3 × 10</p>
+</div>
+
+<div class="card">
+<h3>Saturday - Cardio</h3>
+<p>Running - 30 min</p>
+<p>Cycling - 30 min</p>
+<p>Jump Rope - 15 min</p>
+<p>Stretching - 10 min</p>
+</div>
+
+</div>
+</section>
+
+
+<section class="container">
+
+<h2 class="section-title">💪 Exercise Library</h2>
+
+<div class="card">
+
+<input
+type="text"
+id="exerciseSearch"
+placeholder="Search exercise..."
+onkeyup="searchExercise()"
+>
+
+<div id="exerciseList" style="margin-top:20px;">
+
+<div class="exercise">
+<h3>🏋️ Bench Press</h3>
+<p>Target: Chest, shoulders and triceps.</p>
+</div>
+
+<div class="exercise">
+<h3>🏋️ Squat</h3>
+<p>Target: Quadriceps, hamstrings and glutes.</p>
+</div>
+
+<div class="exercise">
+<h3>🏋️ Deadlift</h3>
+<p>Target: Back, glutes and hamstrings.</p>
+</div>
+
+<div class="exercise">
+<h3>🏋️ Pull Up</h3>
+<p>Target: Lats, biceps and upper back.</p>
+</div>
+
+<div class="exercise">
+<h3>🏋️ Shoulder Press</h3>
+<p>Target: Shoulders and triceps.</p>
+</div>
+
+<div class="exercise">
+<h3>🏋️ Bicep Curl</h3>
+<p>Target: Biceps.</p>
+</div>
+
+<div class="exercise">
+<h3>🏋️ Tricep Pushdown</h3>
+<p>Target: Triceps.</p>
+</div>
+
+<div class="exercise">
+<h3>🏃 Running</h3>
+<p>Target: Cardiovascular fitness and calorie burning.</p>
+</div>
+
+</div>
+
+</div>
+</section>
+
+</div>
+
+
+<!-- ======================================================= -->
+<!-- FOOD PAGE -->
+<!-- ======================================================= -->
+<div class="page" id="food">
+
+<div class="page-top-space"></div>
+
+<section class="container" style="margin-top:0;">
+
+<h2 class="section-title">🍎 Food Calorie Calculator</h2>
+
+<div class="card">
+
+<div class="form-grid">
+
+<div>
+<label>Food</label>
+
+<select id="food">
+<option value="52">Apple - 100g</option>
+<option value="89">Banana - 100g</option>
+<option value="165">Chicken Breast - 100g</option>
+<option value="130">Cooked Rice - 100g</option>
+<option value="155">Whole Egg - 100g</option>
+<option value="119">Paneer - 100g</option>
+<option value="364">Oats - 100g</option>
+<option value="160">Dal - 100g</option>
+<option value="350">Peanut - 100g</option>
+<option value="250">Roti - 100g</option>
+</select>
+
+</div>
+
+<div>
+<label>Quantity (grams)</label>
+<input type="number" id="foodQuantity" value="100" min="1" step="1" inputmode="numeric">
+</div>
+
+</div>
+
+<button onclick="calculateFood()">Calculate Calories</button>
+
+<div id="foodResult"></div>
+
+</div>
+</section>
+
+</div>
+
+
+<!-- ======================================================= -->
+<!-- PROGRESS PAGE -->
+<!-- ======================================================= -->
+<div class="page" id="progress">
+
+<div class="page-top-space"></div>
+
+<section class="container" style="margin-top:0;">
+
+<h2 class="section-title">💧 Water Tracker</h2>
+
+<div class="card">
+
+<p>Daily Goal: <b>8 glasses</b></p>
+
+<div class="water" id="waterButtons"></div>
+
+<h3 style="margin-top:20px;">
+Glasses: <span id="waterCount">0</span>/8
+</h3>
+
+<div class="progress-bar">
+<div class="progress-fill" id="waterProgress"></div>
+</div>
+
+</div>
+
+</section>
+
+
+<section class="container">
+
+<h2 class="section-title">📊 Progress Tracker</h2>
+
+<div class="card">
+
+<div class="form-grid">
+
+<div>
+<label>Current Weight (kg)</label>
+<input type="number" id="currentWeight" placeholder="70" min="1" max="400" step="0.1" inputmode="decimal">
+</div>
+
+<div>
+<label>Target Weight (kg)</label>
+<input type="number" id="targetWeight" placeholder="65" min="1" max="400" step="0.1" inputmode="decimal">
+</div>
+
+</div>
+
+<button onclick="saveProgress()">Save Progress</button>
+
+<div id="progressResult"></div>
+
+</div>
+
+</section>
+
+</div>
+
+
+<footer>
+<p>© 2026 FitTrainer | Personal Fitness Dashboard</p>
+<p style="margin-top:8px;">Train Smart • Eat Better • Stay Consistent</p>
+</footer>
+
+
+<!-- ======================================================= -->
+<!-- BOTTOM NAVIGATION -->
+<!-- ======================================================= -->
+<nav class="bottom-nav" id="bottomNav">
+    <a href="#home" data-page="home"><span class="nav-icon">🏠</span>Home</a>
+    <a href="#calculator" data-page="calculator"><span class="nav-icon">🔥</span>Calculator</a>
+    <a href="#workout" data-page="workout"><span class="nav-icon">🏋️</span>Workout</a>
+    <a href="#food" data-page="food"><span class="nav-icon">🍎</span>Food</a>
+    <a href="#progress" data-page="progress"><span class="nav-icon">📊</span>Progress</a>
+</nav>
+
+
+<!-- ======================================================= -->
+<!-- iOS INSTALL INSTRUCTIONS MODAL -->
+<!-- ======================================================= -->
+<div class="modal-overlay" id="iosModal">
+    <div class="modal-sheet">
+        <h3>Install FitTrainer on iOS</h3>
+        <p style="color:#6b7280;font-size:14px;">Safari doesn't show an install pop-up, so add it manually:</p>
+        <ol>
+            <li>Tap the <span class="share-icon">Share ⬆</span> icon in Safari's toolbar</li>
+            <li>Scroll down and tap <b>"Add to Home Screen"</b></li>
+            <li>Tap <b>"Add"</b> in the top right corner</li>
+        </ol>
+        <button class="modal-close" onclick="closeIOSModal()">Got it</button>
+    </div>
+</div>
+
+
+<script>
+
+/* =========================
+   NAVIGATION / ROUTING
+========================= */
+
+const PAGES = ["home", "calculator", "workout", "food", "progress"];
+
+function showPage(pageId) {
+    if (!PAGES.includes(pageId)) pageId = "home";
+
+    document.querySelectorAll(".page").forEach(function(page) {
+        page.classList.toggle("active", page.id === pageId);
+    });
+
+    document.querySelectorAll(".bottom-nav a").forEach(function(link) {
+        link.classList.toggle("active", link.dataset.page === pageId);
+    });
+
+    window.scrollTo({ top: 0, behavior: "auto" });
+}
+
+function handleRoute() {
+    const pageId = location.hash.replace("#", "") || "home";
+    showPage(pageId);
+}
+
+window.addEventListener("hashchange", handleRoute);
+window.addEventListener("DOMContentLoaded", handleRoute);
+
+
+/* =========================
+   NUMBER HELPERS
+   (robust parsing so the
+   calculators never silently
+   produce "NaN")
+========================= */
+
+function readNumber(id) {
+    const el = document.getElementById(id);
+    if (!el) return NaN;
+
+    // Accept "1,5" style decimals too, strip stray characters.
+    const raw = String(el.value).trim().replace(",", ".");
+    const num = parseFloat(raw);
+
+    return Number.isFinite(num) ? num : NaN;
+}
+
+function showError(targetId, message) {
+    document.getElementById(targetId).innerHTML =
+        `<div class="result error">⚠️ ${message}</div>`;
+}
+
+
+/* =========================
+   BMR + TDEE CALCULATOR
+========================= */
+
+function calculateFitness() {
+
+    const gender = document.getElementById("gender").value || "male";
+    const age = readNumber("age");
+    const weight = readNumber("weight");
+    const height = readNumber("height");
+
+    let activity = readNumber("activity");
+    if (!Number.isFinite(activity) || activity <= 0) activity = 1.2;
+
+    let goal = readNumber("goal");
+    if (!Number.isFinite(goal)) goal = 0;
+
+    if (!Number.isFinite(age) || age <= 0 ||
+        !Number.isFinite(weight) || weight <= 0 ||
+        !Number.isFinite(height) || height <= 0) {
+        showError("fitnessResult", "Please enter a valid age, weight and height.");
+        return;
+    }
+
+    let bmr;
+
+    if (gender === "male") {
+        bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
+    } else {
+        bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
+    }
+
+    const tdee = bmr * activity;
+    const calories = Math.max(tdee + goal, 0);
+
+    const protein = Math.round(weight * 1.8);
+    const fat = Math.round(weight * 0.8);
+    const proteinCalories = protein * 4;
+    const fatCalories = fat * 9;
+    const carbCalories = Math.max(calories - proteinCalories - fatCalories, 0);
+    const carbs = Math.round(carbCalories / 4);
+
+    document.getElementById("fitnessResult").innerHTML = `
+
+        <div class="result">
+
+            <p>BMR</p>
+            <div class="metric">${Math.round(bmr)} kcal</div>
+
+            <br>
+
+            <p>TDEE</p>
+            <div class="metric">${Math.round(tdee)} kcal</div>
+
+            <br>
+
+            <p>Recommended Daily Calories</p>
+            <div class="metric">${Math.round(calories)} kcal</div>
+
+            <hr style="margin:20px 0">
+
+            <h3>Suggested Macros</h3>
+
+            <p>🥩 Protein: <b>${protein} g</b></p>
+            <p>🍚 Carbohydrates: <b>${carbs} g</b></p>
+            <p>🥑 Fat: <b>${fat} g</b></p>
+
+        </div>
+    `;
+}
+
+
+/* =========================
+   BMI
+========================= */
+
+function calculateBMI() {
+
+    const weight = readNumber("bmiWeight");
+    const height = readNumber("bmiHeight");
+
+    if (!Number.isFinite(weight) || weight <= 0 ||
+        !Number.isFinite(height) || height <= 0) {
+        showError("bmiResult", "Please enter a valid weight and height.");
+        return;
+    }
+
+    const heightMeter = height / 100;
+    const bmi = weight / (heightMeter * heightMeter);
+
+    let category;
+
+    if (bmi < 18.5) {
+        category = "Underweight";
+    } else if (bmi < 25) {
+        category = "Normal Weight";
+    } else if (bmi < 30) {
+        category = "Overweight";
+    } else {
+        category = "Obesity";
+    }
+
+    document.getElementById("bmiResult").innerHTML = `
+
+        <div class="result">
+
+            <p>Your BMI</p>
+
+            <div class="metric">
+                ${bmi.toFixed(1)}
+            </div>
+
+            <p style="margin-top:10px">
+                Category: <b>${category}</b>
+            </p>
+
+        </div>
+    `;
+}
+
+
+/* =========================
+   FOOD CALCULATOR
+========================= */
+
+function calculateFood() {
+
+    const foodSelect = document.getElementById("food");
+    let caloriesPer100 = readNumber("food");
+
+    // Fallback: if for any reason the select's value didn't parse,
+    // fall back to the calories of whichever option is selected.
+    if (!Number.isFinite(caloriesPer100) && foodSelect.selectedOptions.length) {
+        caloriesPer100 = parseFloat(foodSelect.selectedOptions[0].value);
+    }
+
+    const quantity = readNumber("foodQuantity");
+
+    if (!Number.isFinite(quantity) || quantity <= 0) {
+        showError("foodResult", "Please enter a valid quantity in grams.");
+        return;
+    }
+
+    if (!Number.isFinite(caloriesPer100)) {
+        showError("foodResult", "Please choose a food item.");
+        return;
+    }
+
+    const calories = (caloriesPer100 * quantity) / 100;
+
+    document.getElementById("foodResult").innerHTML = `
+
+        <div class="result">
+
+            <p>Total Calories</p>
+
+            <div class="metric">
+                ${Math.round(calories)} kcal
+            </div>
+
+            <p style="margin-top:10px">
+                Quantity: ${quantity} g
+            </p>
+
+        </div>
+    `;
+}
+
+
+/* =========================
+   EXERCISE SEARCH
+========================= */
+
+function searchExercise() {
+
+    let search =
+        document.getElementById("exerciseSearch")
+        .value
+        .toLowerCase();
+
+    let exercises =
+        document.querySelectorAll(".exercise");
+
+    exercises.forEach(function(exercise) {
+
+        let text =
+            exercise.innerText.toLowerCase();
+
+        if (text.includes(search)) {
+            exercise.style.display = "block";
+        } else {
+            exercise.style.display = "none";
+        }
+
+    });
+}
+
+
+/* =========================
+   WATER TRACKER
+========================= */
+
+let waterCount =
+    Number(localStorage.getItem("waterCount")) || 0;
+
+function createWaterButtons() {
+
+    let container =
+        document.getElementById("waterButtons");
+
+    container.innerHTML = "";
+
+    for (let i = 1; i <= 8; i++) {
+
+        let button =
+            document.createElement("button");
+
+        button.innerHTML = "💧";
+        button.dataset.index = i;
+
+        button.onclick = function() {
+
+            waterCount = i;
+
+            localStorage.setItem(
+                "waterCount",
+                waterCount
+            );
+
+            updateWater();
+
+        };
+
+        container.appendChild(button);
+    }
+}
+
+function updateWater() {
+
+    document.getElementById("waterCount")
+        .innerText = waterCount;
+
+    document.getElementById("waterProgress")
+        .style.width =
+        (waterCount / 8 * 100) + "%";
+
+    document.querySelectorAll("#waterButtons button").forEach(function(btn) {
+        btn.classList.toggle("filled", Number(btn.dataset.index) <= waterCount);
+    });
+}
+
+createWaterButtons();
+updateWater();
+
+
+/* =========================
+   PROGRESS TRACKER
+========================= */
+
+function saveProgress() {
+
+    const current = readNumber("currentWeight");
+    const target = readNumber("targetWeight");
+
+    if (!Number.isFinite(current) || current <= 0 ||
+        !Number.isFinite(target) || target <= 0) {
+        showError("progressResult", "Please enter both weights.");
+        return;
+    }
+
+    localStorage.setItem("currentWeight", current);
+    localStorage.setItem("targetWeight", target);
+
+    const difference = Math.abs(current - target);
+
+    document.getElementById("progressResult").innerHTML = `
+
+        <div class="result">
+
+            <h3>Progress Saved ✅</h3>
+
+            <p style="margin-top:10px">
+                Current Weight: <b>${current} kg</b>
+            </p>
+
+            <p>
+                Target Weight: <b>${target} kg</b>
+            </p>
+
+            <p>
+                Difference: <b>${difference.toFixed(1)} kg</b>
+            </p>
+
+        </div>
+    `;
+}
+
+
+/* =========================
+   MOTIVATION
+========================= */
+
+const motivations = [
+
+    "Consistency beats motivation.",
+    "Small progress is still progress.",
+    "Train hard. Recover harder.",
+    "Your only competition is yourself.",
+    "Don't wish for it. Work for it.",
+    "Discipline creates results.",
+    "One workout at a time.",
+    "Strong body. Strong mind.",
+    "Make yourself proud.",
+    "Stay consistent and trust the process."
+
+];
+
+function newMotivation() {
+
+    let random =
+        Math.floor(
+            Math.random() * motivations.length
+        );
+
+    document.getElementById("motivation")
+        .innerText =
+        motivations[random];
+}
+
+
+/* =========================
+   CUSTOM SELECT (styled dropdown)
+   Wraps every native <select>, keeps the
+   original element in sync so all existing
+   getElementById(...).value calls still work.
+========================= */
+
+function enhanceSelects() {
+
+    document.querySelectorAll("select").forEach(function(select) {
+
+        // Guarantee the underlying select always has a valid value,
+        // even before the user interacts with the custom UI.
+        if (select.selectedIndex === -1 && select.options.length) {
+            select.selectedIndex = 0;
+        }
+
+        select.style.display = "none";
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "custom-select";
+        wrapper.tabIndex = 0;
+
+        const trigger = document.createElement("div");
+        trigger.className = "custom-select-trigger";
+
+        const label = document.createElement("span");
+        label.className = "label";
+
+        const arrow = document.createElement("span");
+        arrow.className = "arrow";
+
+        trigger.appendChild(label);
+        trigger.appendChild(arrow);
+
+        const optionList = document.createElement("ul");
+        optionList.className = "custom-select-options";
+
+        const optionEls = [];
+
+        Array.from(select.options).forEach(function(opt, index) {
+
+            const li = document.createElement("li");
+            li.className = "custom-select-option";
+            li.dataset.value = opt.value;
+
+            const text = document.createElement("span");
+            text.textContent = opt.textContent;
+
+            const check = document.createElement("span");
+            check.className = "check";
+            check.textContent = "✓";
+
+            li.appendChild(text);
+            li.appendChild(check);
+
+            if (index === select.selectedIndex) {
+                li.classList.add("selected");
+                label.textContent = opt.textContent;
+            }
+
+            function selectThisOption() {
+                select.selectedIndex = index;
+                select.value = opt.value;
+                select.dispatchEvent(new Event("change"));
+
+                optionEls.forEach(function(el) {
+                    el.classList.remove("selected");
+                });
+                li.classList.add("selected");
+                label.textContent = opt.textContent;
+
+                closeSelect();
+            }
+
+            li.addEventListener("click", selectThisOption);
+
+            optionList.appendChild(li);
+            optionEls.push(li);
+        });
+
+        if (!label.textContent && select.options.length) {
+            label.textContent = select.options[0].textContent;
+        }
+
+        wrapper.appendChild(trigger);
+        wrapper.appendChild(optionList);
+        select.insertAdjacentElement("afterend", wrapper);
+
+        function openSelect() {
+            document.querySelectorAll(".custom-select.open").forEach(function(el) {
+                if (el !== wrapper) el.classList.remove("open");
+            });
+            wrapper.classList.add("open");
+        }
+
+        function closeSelect() {
+            wrapper.classList.remove("open");
+        }
+
+        trigger.addEventListener("click", function(e) {
+            e.stopPropagation();
+            wrapper.classList.contains("open") ? closeSelect() : openSelect();
+        });
+
+        wrapper.addEventListener("keydown", function(e) {
+            const isOpen = wrapper.classList.contains("open");
+
+            if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                isOpen ? closeSelect() : openSelect();
+            } else if (e.key === "Escape") {
+                closeSelect();
+            } else if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+                e.preventDefault();
+                if (!isOpen) { openSelect(); return; }
+
+                const current = optionEls.findIndex(function(el) {
+                    return el.classList.contains("highlighted") || el.classList.contains("selected");
+                });
+
+                let next = current + (e.key === "ArrowDown" ? 1 : -1);
+                next = Math.max(0, Math.min(optionEls.length - 1, next));
+
+                optionEls.forEach(function(el) { el.classList.remove("highlighted"); });
+                optionEls[next].classList.add("highlighted");
+                optionEls[next].scrollIntoView({ block: "nearest" });
+            }
+        });
+
+        document.addEventListener("click", function(e) {
+            if (!wrapper.contains(e.target)) closeSelect();
+        });
+    });
+}
+
+enhanceSelects();
+
+
+/* =========================
+   PWA: INSTALL PROMPT
+========================= */
+
+let deferredPrompt = null;
+const installBtn = document.getElementById("installBtn");
+const installBanner = document.getElementById("installBanner");
+
+function isStandalone() {
+    return window.matchMedia("(display-mode: standalone)").matches ||
+        window.navigator.standalone === true;
+}
+
+function isIOS() {
+    return /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+}
+
+function refreshInstallUI() {
+    if (isStandalone()) {
+        installBtn.classList.remove("show");
+        installBanner.classList.remove("show");
+        return;
+    }
+
+    if (deferredPrompt || isIOS()) {
+        installBtn.classList.add("show");
+        installBanner.classList.add("show");
+    }
+}
+
+window.addEventListener("beforeinstallprompt", function(e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    refreshInstallUI();
+});
+
+window.addEventListener("appinstalled", function() {
+    deferredPrompt = null;
+    installBtn.classList.remove("show");
+    installBanner.classList.remove("show");
+});
+
+async function handleInstallClick() {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        refreshInstallUI();
+        return;
+    }
+
+    if (isIOS()) {
+        document.getElementById("iosModal").classList.add("show");
+        return;
+    }
+
+    alert("To install: open your browser menu and choose \"Install app\" or \"Add to Home screen\".");
+}
+
+function closeIOSModal() {
+    document.getElementById("iosModal").classList.remove("show");
+}
+
+document.getElementById("iosModal").addEventListener("click", function(e) {
+    if (e.target === this) closeIOSModal();
+});
+
+refreshInstallUI();
+
+
+/* =========================
+   SERVICE WORKER
+========================= */
+
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function() {
+        navigator.serviceWorker.register("service-worker.js").catch(function(err) {
+            console.warn("Service worker registration failed:", err);
+        });
+    });
+}
+
+</script>
+
+</body>
+  </html>
