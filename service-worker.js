@@ -1,5 +1,5 @@
 // Bump this whenever you deploy changes so old caches get cleared out.
-const CACHE_NAME = "fittrainer-cache-v2";
+const CACHE_NAME = "fittrainer-cache-v3";
 
 const APP_SHELL = [
   "./",
