@@ -282,6 +282,11 @@ header {
     padding: 24px;
     border-radius: 16px;
     box-shadow: 0 5px 20px rgba(0,0,0,.07);
+    transition: box-shadow .2s;
+}
+
+.card:hover {
+    box-shadow: 0 8px 26px rgba(0,0,0,.1);
 }
 
 .card h3 {
@@ -362,20 +367,221 @@ button:active {
 }
 
 .exercise {
-    border-left: 4px solid #22c55e;
+    border-left: 4px solid var(--accent, #22c55e);
     margin-bottom: 15px;
     padding: 15px;
     background: white;
     border-radius: 10px;
+    transition: transform .15s, box-shadow .15s;
 }
 
-.exercise h3 {
+.exercise:hover {
+    transform: translateX(2px);
+    box-shadow: 0 5px 16px rgba(0,0,0,.06);
+}
+
+.exercise-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
     margin-bottom: 6px;
+}
+
+.exercise-top h3 {
+    margin-bottom: 0;
+}
+
+.exercise-tag {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent, #16a34a);
+    background: var(--accent-bg, #ecfdf5);
+    padding: 4px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    white-space: nowrap;
+    flex: none;
 }
 
 .exercise p {
     color: #6b7280;
     line-height: 1.5;
+}
+
+/* ============ SECTION TITLE ICON ============ */
+
+.title-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: #dcfce7;
+    font-size: 18px;
+    flex: none;
+}
+
+/* ============ HOME QUICK LINKS ============ */
+
+.quick-card .icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    margin: 0 auto 10px;
+    background: var(--accent-bg, #dcfce7);
+}
+
+/* ============ WORKOUT PLANNER CARDS ============ */
+
+.workout-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,.07);
+    border-top: 4px solid var(--accent, #22c55e);
+    position: relative;
+    transition: transform .15s, box-shadow .15s;
+}
+
+.workout-card.is-today {
+    box-shadow: 0 10px 28px rgba(0,0,0,.13);
+    transform: translateY(-3px);
+}
+
+.workout-card-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.workout-day-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--accent-bg, #dcfce7);
+    color: var(--accent, #16a34a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+    flex: none;
+}
+
+.workout-card-top h3 {
+    font-size: 16px;
+    margin-bottom: 2px;
+}
+
+.muscle-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent, #16a34a);
+    background: var(--accent-bg, #dcfce7);
+    padding: 3px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+}
+
+.today-pill {
+    margin-left: auto;
+    background: #111827;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 5px 11px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    display: none;
+    white-space: nowrap;
+    flex: none;
+}
+
+.workout-card.is-today .today-pill {
+    display: inline-block;
+}
+
+.workout-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.workout-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    background: #f9fafb;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 13.5px;
+}
+
+.workout-row span:first-child {
+    color: #374151;
+    font-weight: 500;
+}
+
+.set-badge {
+    background: white;
+    border: 1px solid #e5e7eb;
+    color: #111827;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 8px;
+    white-space: nowrap;
+    flex: none;
+}
+
+/* ============ CATEGORY FILTER CHIPS ============ */
+
+.chip-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.chip {
+    border: 1px solid #e5e7eb;
+    background: white;
+    color: #6b7280;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: .15s;
+}
+
+.chip:hover {
+    border-color: var(--accent, #22c55e);
+    color: var(--accent, #22c55e);
+}
+
+.chip.active {
+    background: var(--accent, #22c55e);
+    border-color: var(--accent, #22c55e);
+    color: white;
+}
+
+.exercise-count {
+    font-size: 12px;
+    color: #9ca3af;
+    margin: -8px 0 14px;
+    font-weight: 600;
 }
 
 .progress-bar {
@@ -676,7 +882,7 @@ footer {
 
 <a href="#calculator">
 <div class="quick-card">
-<div class="icon">🔥</div>
+<div class="icon" style="--accent-bg:#fff7ed">🔥</div>
 <h3>Calculator</h3>
 <p>BMR, TDEE &amp; BMI</p>
 </div>
@@ -684,7 +890,7 @@ footer {
 
 <a href="#workout">
 <div class="quick-card">
-<div class="icon">🏋️</div>
+<div class="icon" style="--accent-bg:#eff6ff">🏋️</div>
 <h3>Workout</h3>
 <p>Weekly plan &amp; exercise library</p>
 </div>
@@ -692,7 +898,7 @@ footer {
 
 <a href="#food">
 <div class="quick-card">
-<div class="icon">🍎</div>
+<div class="icon" style="--accent-bg:#f0fdf4">🍎</div>
 <h3>Food</h3>
 <p>Calorie calculator</p>
 </div>
@@ -700,7 +906,7 @@ footer {
 
 <a href="#progress">
 <div class="quick-card">
-<div class="icon">📊</div>
+<div class="icon" style="--accent-bg:#eef2ff">📊</div>
 <h3>Progress</h3>
 <p>Water &amp; weight tracking</p>
 </div>
@@ -719,7 +925,7 @@ footer {
 Your body can achieve what your mind believes.
 </p>
 
-<button onclick="newMotivation()">New Motivation</button>
+<button onclick="newMotivation()">🔁 New Motivation</button>
 
 </div>
 </section>
@@ -741,7 +947,7 @@ Your body can achieve what your mind believes.
 
 <section class="container" style="margin-top:0;">
 
-<h2 class="section-title">🔥 BMR &amp; TDEE Calculator</h2>
+<h2 class="section-title"><span class="title-icon">🔥</span> BMR &amp; TDEE Calculator</h2>
 
 <div class="card">
 
@@ -794,7 +1000,7 @@ Your body can achieve what your mind believes.
 
 </div>
 
-<button onclick="calculateFitness()">Calculate</button>
+<button onclick="calculateFitness()">🧮 Calculate</button>
 
 <div id="fitnessResult"></div>
 
@@ -804,7 +1010,7 @@ Your body can achieve what your mind believes.
 
 <section class="container">
 
-<h2 class="section-title">⚖️ BMI Calculator</h2>
+<h2 class="section-title"><span class="title-icon" style="background:#dbeafe">⚖️</span> BMI Calculator</h2>
 
 <div class="card">
 
@@ -822,7 +1028,7 @@ Your body can achieve what your mind believes.
 
 </div>
 
-<button onclick="calculateBMI()">Calculate BMI</button>
+<button onclick="calculateBMI()">🧮 Calculate BMI</button>
 
 <div id="bmiResult"></div>
 
@@ -842,56 +1048,110 @@ Your body can achieve what your mind believes.
 
 <section class="container" style="margin-top:0;">
 
-<h2 class="section-title">🏋️ Workout Planner</h2>
+<h2 class="section-title"><span class="title-icon">🏋️</span> Workout Planner</h2>
 
 <div class="card-grid">
 
-<div class="card">
-<h3>Monday - Chest</h3>
-<p>Bench Press - 4 × 10</p>
-<p>Incline Dumbbell Press - 3 × 12</p>
-<p>Chest Fly - 3 × 12</p>
-<p>Push Ups - 3 × 15</p>
+<div class="workout-card" data-day="1" style="--accent:#f97316;--accent-bg:#fff7ed">
+<div class="workout-card-top">
+<div class="workout-day-icon">🏋️</div>
+<div>
+<h3>Monday</h3>
+<span class="muscle-tag">Chest</span>
+</div>
+<span class="today-pill">Today</span>
+</div>
+<div class="workout-rows">
+<div class="workout-row"><span>Bench Press</span><span class="set-badge">4 × 10</span></div>
+<div class="workout-row"><span>Incline Dumbbell Press</span><span class="set-badge">3 × 12</span></div>
+<div class="workout-row"><span>Chest Fly</span><span class="set-badge">3 × 12</span></div>
+<div class="workout-row"><span>Push Ups</span><span class="set-badge">3 × 15</span></div>
+</div>
 </div>
 
-<div class="card">
-<h3>Tuesday - Back</h3>
-<p>Lat Pulldown - 4 × 10</p>
-<p>Barbell Row - 3 × 10</p>
-<p>Seated Cable Row - 3 × 12</p>
-<p>Deadlift - 3 × 8</p>
+<div class="workout-card" data-day="2" style="--accent:#3b82f6;--accent-bg:#eff6ff">
+<div class="workout-card-top">
+<div class="workout-day-icon">🏋️</div>
+<div>
+<h3>Tuesday</h3>
+<span class="muscle-tag">Back</span>
+</div>
+<span class="today-pill">Today</span>
+</div>
+<div class="workout-rows">
+<div class="workout-row"><span>Lat Pulldown</span><span class="set-badge">4 × 10</span></div>
+<div class="workout-row"><span>Barbell Row</span><span class="set-badge">3 × 10</span></div>
+<div class="workout-row"><span>Seated Cable Row</span><span class="set-badge">3 × 12</span></div>
+<div class="workout-row"><span>Deadlift</span><span class="set-badge">3 × 8</span></div>
+</div>
 </div>
 
-<div class="card">
-<h3>Wednesday - Legs</h3>
-<p>Squats - 4 × 10</p>
-<p>Leg Press - 3 × 12</p>
-<p>Leg Curl - 3 × 12</p>
-<p>Calf Raise - 4 × 15</p>
+<div class="workout-card" data-day="3" style="--accent:#8b5cf6;--accent-bg:#f5f3ff">
+<div class="workout-card-top">
+<div class="workout-day-icon">🏋️</div>
+<div>
+<h3>Wednesday</h3>
+<span class="muscle-tag">Legs</span>
+</div>
+<span class="today-pill">Today</span>
+</div>
+<div class="workout-rows">
+<div class="workout-row"><span>Squats</span><span class="set-badge">4 × 10</span></div>
+<div class="workout-row"><span>Leg Press</span><span class="set-badge">3 × 12</span></div>
+<div class="workout-row"><span>Leg Curl</span><span class="set-badge">3 × 12</span></div>
+<div class="workout-row"><span>Calf Raise</span><span class="set-badge">4 × 15</span></div>
+</div>
 </div>
 
-<div class="card">
-<h3>Thursday - Shoulders</h3>
-<p>Shoulder Press - 4 × 10</p>
-<p>Lateral Raise - 3 × 15</p>
-<p>Front Raise - 3 × 12</p>
-<p>Face Pull - 3 × 15</p>
+<div class="workout-card" data-day="4" style="--accent:#ec4899;--accent-bg:#fdf2f8">
+<div class="workout-card-top">
+<div class="workout-day-icon">🏋️</div>
+<div>
+<h3>Thursday</h3>
+<span class="muscle-tag">Shoulders</span>
+</div>
+<span class="today-pill">Today</span>
+</div>
+<div class="workout-rows">
+<div class="workout-row"><span>Shoulder Press</span><span class="set-badge">4 × 10</span></div>
+<div class="workout-row"><span>Lateral Raise</span><span class="set-badge">3 × 15</span></div>
+<div class="workout-row"><span>Front Raise</span><span class="set-badge">3 × 12</span></div>
+<div class="workout-row"><span>Face Pull</span><span class="set-badge">3 × 15</span></div>
+</div>
 </div>
 
-<div class="card">
-<h3>Friday - Arms</h3>
-<p>Barbell Curl - 3 × 12</p>
-<p>Hammer Curl - 3 × 12</p>
-<p>Tricep Pushdown - 3 × 12</p>
-<p>Skull Crusher - 3 × 10</p>
+<div class="workout-card" data-day="5" style="--accent:#14b8a6;--accent-bg:#f0fdfa">
+<div class="workout-card-top">
+<div class="workout-day-icon">🏋️</div>
+<div>
+<h3>Friday</h3>
+<span class="muscle-tag">Arms</span>
+</div>
+<span class="today-pill">Today</span>
+</div>
+<div class="workout-rows">
+<div class="workout-row"><span>Barbell Curl</span><span class="set-badge">3 × 12</span></div>
+<div class="workout-row"><span>Hammer Curl</span><span class="set-badge">3 × 12</span></div>
+<div class="workout-row"><span>Tricep Pushdown</span><span class="set-badge">3 × 12</span></div>
+<div class="workout-row"><span>Skull Crusher</span><span class="set-badge">3 × 10</span></div>
+</div>
 </div>
 
-<div class="card">
-<h3>Saturday - Cardio</h3>
-<p>Running - 30 min</p>
-<p>Cycling - 30 min</p>
-<p>Jump Rope - 15 min</p>
-<p>Stretching - 10 min</p>
+<div class="workout-card" data-day="6" style="--accent:#ef4444;--accent-bg:#fef2f2">
+<div class="workout-card-top">
+<div class="workout-day-icon">🏃</div>
+<div>
+<h3>Saturday</h3>
+<span class="muscle-tag">Cardio</span>
+</div>
+<span class="today-pill">Today</span>
+</div>
+<div class="workout-rows">
+<div class="workout-row"><span>Running</span><span class="set-badge">30 min</span></div>
+<div class="workout-row"><span>Cycling</span><span class="set-badge">30 min</span></div>
+<div class="workout-row"><span>Jump Rope</span><span class="set-badge">15 min</span></div>
+<div class="workout-row"><span>Stretching</span><span class="set-badge">10 min</span></div>
+</div>
 </div>
 
 </div>
@@ -900,56 +1160,92 @@ Your body can achieve what your mind believes.
 
 <section class="container">
 
-<h2 class="section-title">💪 Exercise Library</h2>
+<h2 class="section-title"><span class="title-icon">💪</span> Exercise Library</h2>
 
 <div class="card">
+
+<div class="chip-row" id="categoryChips">
+<button class="chip active" data-cat="all" onclick="setCategory('all', this)">All</button>
+<button class="chip" data-cat="chest" style="--accent:#f97316" onclick="setCategory('chest', this)">Chest</button>
+<button class="chip" data-cat="back" style="--accent:#3b82f6" onclick="setCategory('back', this)">Back</button>
+<button class="chip" data-cat="legs" style="--accent:#8b5cf6" onclick="setCategory('legs', this)">Legs</button>
+<button class="chip" data-cat="shoulders" style="--accent:#ec4899" onclick="setCategory('shoulders', this)">Shoulders</button>
+<button class="chip" data-cat="arms" style="--accent:#14b8a6" onclick="setCategory('arms', this)">Arms</button>
+<button class="chip" data-cat="cardio" style="--accent:#ef4444" onclick="setCategory('cardio', this)">Cardio</button>
+</div>
 
 <input
 type="text"
 id="exerciseSearch"
 placeholder="Search exercise..."
-onkeyup="searchExercise()"
+onkeyup="filterExercises()"
 >
 
-<div id="exerciseList" style="margin-top:20px;">
+<p class="exercise-count" id="exerciseCount" style="margin-top:14px;"></p>
 
-<div class="exercise">
+<div id="exerciseList">
+
+<div class="exercise" data-cat="chest" style="--accent:#f97316;--accent-bg:#fff7ed">
+<div class="exercise-top">
 <h3>🏋️ Bench Press</h3>
+<span class="exercise-tag">Chest</span>
+</div>
 <p>Target: Chest, shoulders and triceps.</p>
 </div>
 
-<div class="exercise">
+<div class="exercise" data-cat="legs" style="--accent:#8b5cf6;--accent-bg:#f5f3ff">
+<div class="exercise-top">
 <h3>🏋️ Squat</h3>
+<span class="exercise-tag">Legs</span>
+</div>
 <p>Target: Quadriceps, hamstrings and glutes.</p>
 </div>
 
-<div class="exercise">
+<div class="exercise" data-cat="back" style="--accent:#3b82f6;--accent-bg:#eff6ff">
+<div class="exercise-top">
 <h3>🏋️ Deadlift</h3>
+<span class="exercise-tag">Back</span>
+</div>
 <p>Target: Back, glutes and hamstrings.</p>
 </div>
 
-<div class="exercise">
+<div class="exercise" data-cat="back" style="--accent:#3b82f6;--accent-bg:#eff6ff">
+<div class="exercise-top">
 <h3>🏋️ Pull Up</h3>
+<span class="exercise-tag">Back</span>
+</div>
 <p>Target: Lats, biceps and upper back.</p>
 </div>
 
-<div class="exercise">
+<div class="exercise" data-cat="shoulders" style="--accent:#ec4899;--accent-bg:#fdf2f8">
+<div class="exercise-top">
 <h3>🏋️ Shoulder Press</h3>
+<span class="exercise-tag">Shoulders</span>
+</div>
 <p>Target: Shoulders and triceps.</p>
 </div>
 
-<div class="exercise">
+<div class="exercise" data-cat="arms" style="--accent:#14b8a6;--accent-bg:#f0fdfa">
+<div class="exercise-top">
 <h3>🏋️ Bicep Curl</h3>
+<span class="exercise-tag">Arms</span>
+</div>
 <p>Target: Biceps.</p>
 </div>
 
-<div class="exercise">
+<div class="exercise" data-cat="arms" style="--accent:#14b8a6;--accent-bg:#f0fdfa">
+<div class="exercise-top">
 <h3>🏋️ Tricep Pushdown</h3>
+<span class="exercise-tag">Arms</span>
+</div>
 <p>Target: Triceps.</p>
 </div>
 
-<div class="exercise">
+<div class="exercise" data-cat="cardio" style="--accent:#ef4444;--accent-bg:#fef2f2">
+<div class="exercise-top">
 <h3>🏃 Running</h3>
+<span class="exercise-tag">Cardio</span>
+</div>
 <p>Target: Cardiovascular fitness and calorie burning.</p>
 </div>
 
@@ -970,7 +1266,7 @@ onkeyup="searchExercise()"
 
 <section class="container" style="margin-top:0;">
 
-<h2 class="section-title">🍎 Food Calorie Calculator</h2>
+<h2 class="section-title"><span class="title-icon" style="background:#dcfce7">🍎</span> Food Calorie Calculator</h2>
 
 <div class="card">
 
@@ -1001,7 +1297,7 @@ onkeyup="searchExercise()"
 
 </div>
 
-<button onclick="calculateFood()">Calculate Calories</button>
+<button onclick="calculateFood()">🧮 Calculate Calories</button>
 
 <div id="foodResult"></div>
 
@@ -1020,7 +1316,7 @@ onkeyup="searchExercise()"
 
 <section class="container" style="margin-top:0;">
 
-<h2 class="section-title">💧 Water Tracker</h2>
+<h2 class="section-title"><span class="title-icon" style="background:#dbeafe">💧</span> Water Tracker</h2>
 
 <div class="card">
 
@@ -1043,7 +1339,7 @@ Glasses: <span id="waterCount">0</span>/8
 
 <section class="container">
 
-<h2 class="section-title">📊 Progress Tracker</h2>
+<h2 class="section-title"><span class="title-icon" style="background:#ede9fe">📊</span> Progress Tracker</h2>
 
 <div class="card">
 
@@ -1061,7 +1357,7 @@ Glasses: <span id="waterCount">0</span>/8
 
 </div>
 
-<button onclick="saveProgress()">Save Progress</button>
+<button onclick="saveProgress()">💾 Save Progress</button>
 
 <div id="progressResult"></div>
 
@@ -1326,32 +1622,68 @@ function calculateFood() {
 
 
 /* =========================
-   EXERCISE SEARCH
+   EXERCISE LIBRARY: SEARCH + FILTER
 ========================= */
 
-function searchExercise() {
+let activeCategory = "all";
 
-    let search =
+function filterExercises() {
+
+    const search =
         document.getElementById("exerciseSearch")
         .value
         .toLowerCase();
 
-    let exercises =
+    const exercises =
         document.querySelectorAll(".exercise");
+
+    let visibleCount = 0;
 
     exercises.forEach(function(exercise) {
 
-        let text =
-            exercise.innerText.toLowerCase();
+        const text = exercise.innerText.toLowerCase();
+        const matchesSearch = text.includes(search);
+        const matchesCategory = activeCategory === "all" || exercise.dataset.cat === activeCategory;
+        const show = matchesSearch && matchesCategory;
 
-        if (text.includes(search)) {
-            exercise.style.display = "block";
-        } else {
-            exercise.style.display = "none";
-        }
+        exercise.style.display = show ? "block" : "none";
+        if (show) visibleCount++;
 
     });
+
+    const countEl = document.getElementById("exerciseCount");
+    if (countEl) {
+        countEl.textContent = "Showing " + visibleCount + " exercise" + (visibleCount === 1 ? "" : "s");
+    }
 }
+
+function setCategory(cat, btn) {
+    activeCategory = cat;
+
+    document.querySelectorAll("#categoryChips .chip").forEach(function(chip) {
+        chip.classList.toggle("active", chip === btn);
+    });
+
+    filterExercises();
+}
+
+filterExercises();
+
+
+/* =========================
+   WORKOUT PLANNER: TODAY HIGHLIGHT
+========================= */
+
+function markTodayWorkout() {
+
+    const jsDay = new Date().getDay(); // 0 = Sunday ... 6 = Saturday
+
+    document.querySelectorAll(".workout-card").forEach(function(card) {
+        card.classList.toggle("is-today", Number(card.dataset.day) === jsDay);
+    });
+}
+
+markTodayWorkout();
 
 
 /* =========================
