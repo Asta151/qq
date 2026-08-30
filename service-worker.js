@@ -1,5 +1,7 @@
 // Bump this whenever you deploy changes so old caches get cleared out.
-const CACHE_NAME = "fittrainer-cache-v4";
+// v3: modern UI pass (dark mode, rings, charts, steppers, etc.) - no new
+// asset paths were introduced, everything still lives in index.html.
+const CACHE_NAME = "fittrainer-cache-v3";
 
 const APP_SHELL = [
   "./",
