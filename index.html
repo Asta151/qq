@@ -2188,6 +2188,65 @@ window.addEventListener("DOMContentLoaded", handleRoute);
 
 
 /* =========================
+   SAFE LOCAL STORAGE
+   Wrap every localStorage call so a browser that blocks it
+   (private browsing, a sandboxed/cross-origin preview, storage
+   quota, etc.) can't silently crash the rest of the script and
+   make it look like nothing is being saved.
+========================= */
+
+function localStorageAvailable() {
+    try {
+        const testKey = "__fitTrainerStorageTest__";
+        localStorage.setItem(testKey, "1");
+        localStorage.removeItem(testKey);
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
+const STORAGE_OK = localStorageAvailable();
+
+function safeStorageGet(key) {
+    if (!STORAGE_OK) return null;
+    try {
+        return localStorage.getItem(key);
+    } catch (e) {
+        return null;
+    }
+}
+
+function safeStorageSet(key, value) {
+    if (!STORAGE_OK) return false;
+    try {
+        localStorage.setItem(key, value);
+        return true;
+    } catch (e) {
+        // Most likely QuotaExceededError - fail quietly, the app still works
+        // for this session, it just won't persist.
+        return false;
+    }
+}
+
+if (!STORAGE_OK) {
+    const banner = document.createElement("div");
+    banner.className = "install-banner show";
+    banner.style.marginTop = "16px";
+    banner.innerHTML = `
+        <div class="text">
+            <b>⚠️ Local storage is blocked</b>
+            <span>Your browser (private/incognito mode, or how this page is being previewed) won't let FitTrainer save anything. Everything will reset on refresh until you open this in a normal browser tab.</span>
+        </div>
+    `;
+    document.addEventListener("DOMContentLoaded", function() {
+        const header = document.getElementById("appHeader");
+        if (header) header.insertAdjacentElement("afterend", banner);
+    });
+}
+
+
+/* =========================
    NUMBER HELPERS
    (robust parsing so the
    calculators never silently
@@ -2533,7 +2592,7 @@ function calculateFood() {
 
 function getCustomFoods() {
     try {
-        const parsed = JSON.parse(localStorage.getItem("customFoods"));
+        const parsed = JSON.parse(safeStorageGet("customFoods"));
         return Array.isArray(parsed) ? parsed : [];
     } catch (e) {
         return [];
@@ -2604,7 +2663,7 @@ function addCustomFood() {
     };
 
     foods.push(entry);
-    localStorage.setItem("customFoods", JSON.stringify(foods));
+    safeStorageSet("customFoods", JSON.stringify(foods));
 
     nameInput.value = "";
     calInput.value = "";
@@ -2615,7 +2674,7 @@ function addCustomFood() {
 
 function removeCustomFood(id) {
     const foods = getCustomFoods().filter(function(f) { return f.id !== id; });
-    localStorage.setItem("customFoods", JSON.stringify(foods));
+    safeStorageSet("customFoods", JSON.stringify(foods));
 
     rebuildFoodSelect();
     renderCustomFoodChips();
@@ -2775,7 +2834,7 @@ enhanceWorkoutRows();
 
 function getExerciseLog() {
     try {
-        const parsed = JSON.parse(localStorage.getItem("exerciseLog"));
+        const parsed = JSON.parse(safeStorageGet("exerciseLog"));
         return parsed && typeof parsed === "object" ? parsed : {};
     } catch (e) {
         return {};
@@ -2811,7 +2870,7 @@ function toggleExerciseDone(dayIndex, exerciseName, row, btn) {
         btn.classList.remove("active");
     }
 
-    localStorage.setItem("exerciseLog", JSON.stringify(log));
+    safeStorageSet("exerciseLog", JSON.stringify(log));
 
     checkWorkoutDayCompletion(today);
 }
@@ -2839,17 +2898,17 @@ function checkWorkoutDayCompletion(dateStr) {
 
 function handleWorkoutStreakHit(today, cardEl) {
 
-    const lastDate = localStorage.getItem("lastWorkoutStreakDate");
+    const lastDate = safeStorageGet("lastWorkoutStreakDate");
     if (lastDate === today) return; // already counted today
 
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
 
-    let streak = Number(localStorage.getItem("workoutStreak")) || 0;
+    let streak = Number(safeStorageGet("workoutStreak")) || 0;
     streak = (lastDate === dateKey(yesterday)) ? streak + 1 : 1;
 
-    localStorage.setItem("workoutStreak", streak);
-    localStorage.setItem("lastWorkoutStreakDate", today);
+    safeStorageSet("workoutStreak", streak);
+    safeStorageSet("lastWorkoutStreakDate", today);
 
     renderWorkoutStreakBadge();
 
@@ -2859,7 +2918,7 @@ function handleWorkoutStreakHit(today, cardEl) {
 
 function renderWorkoutStreakBadge() {
 
-    const streak = Number(localStorage.getItem("workoutStreak")) || 0;
+    const streak = Number(safeStorageGet("workoutStreak")) || 0;
     const html = streak > 0
         ? `<span class="streak-badge">💪 ${streak} day streak</span>`
         : "";
@@ -3049,7 +3108,7 @@ document.getElementById("restTimerModal").addEventListener("click", function(e) 
 ========================= */
 
 let waterCount =
-    Number(localStorage.getItem("waterCount")) || 0;
+    Number(safeStorageGet("waterCount")) || 0;
 
 function createWaterButtons() {
 
@@ -3075,7 +3134,7 @@ function createWaterButtons() {
             const reachedGoal = waterCount !== 8 && i === 8;
             waterCount = (waterCount === i) ? 0 : i;
 
-            localStorage.setItem(
+            safeStorageSet(
                 "waterCount",
                 waterCount
             );
@@ -3123,18 +3182,18 @@ function dateKey(date) {
 function handleWaterGoalHit() {
 
     const today = dateKey(new Date());
-    const lastDate = localStorage.getItem("lastWaterGoalDate");
+    const lastDate = safeStorageGet("lastWaterGoalDate");
 
     if (lastDate !== today) {
 
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
 
-        let streak = Number(localStorage.getItem("waterStreak")) || 0;
+        let streak = Number(safeStorageGet("waterStreak")) || 0;
         streak = (lastDate === dateKey(yesterday)) ? streak + 1 : 1;
 
-        localStorage.setItem("waterStreak", streak);
-        localStorage.setItem("lastWaterGoalDate", today);
+        safeStorageSet("waterStreak", streak);
+        safeStorageSet("lastWaterGoalDate", today);
 
         renderStreakBadge();
     }
@@ -3144,7 +3203,7 @@ function handleWaterGoalHit() {
 
 function renderStreakBadge() {
 
-    const streak = Number(localStorage.getItem("waterStreak")) || 0;
+    const streak = Number(safeStorageGet("waterStreak")) || 0;
     const html = streak > 0
         ? `<span class="streak-badge">🔥 ${streak} day streak</span>`
         : "";
@@ -3215,7 +3274,7 @@ function launchConfetti() {
 
 function getWeightHistory() {
     try {
-        const parsed = JSON.parse(localStorage.getItem("weightHistory"));
+        const parsed = JSON.parse(safeStorageGet("weightHistory"));
         return Array.isArray(parsed) ? parsed : [];
     } catch (e) {
         return [];
@@ -3233,15 +3292,15 @@ function saveProgress() {
         return;
     }
 
-    localStorage.setItem("currentWeight", current);
-    localStorage.setItem("targetWeight", target);
+    safeStorageSet("currentWeight", current);
+    safeStorageSet("targetWeight", target);
 
     const history = getWeightHistory();
     const previous = history.length ? history[history.length - 1].w : null;
 
     history.push({ t: Date.now(), w: current });
     while (history.length > 60) history.shift(); // cap stored history
-    localStorage.setItem("weightHistory", JSON.stringify(history));
+    safeStorageSet("weightHistory", JSON.stringify(history));
 
     const difference = Math.abs(current - target);
 
@@ -3348,6 +3407,27 @@ function renderWeightChart() {
 
 renderWeightChart();
 
+// Bug fix: currentWeight/targetWeight were saved on every "Save Progress"
+// click, but nothing ever read them back into the inputs - so the fields
+// looked empty (and the data "disappeared") after every refresh, even
+// though the history/streak were persisted correctly the whole time.
+function prefillProgressInputs() {
+    const currentInput = document.getElementById("currentWeight");
+    const targetInput = document.getElementById("targetWeight");
+
+    const savedCurrent = safeStorageGet("currentWeight");
+    const savedTarget = safeStorageGet("targetWeight");
+
+    if (currentInput && savedCurrent !== null && !currentInput.value) {
+        currentInput.value = savedCurrent;
+    }
+    if (targetInput && savedTarget !== null && !targetInput.value) {
+        targetInput.value = savedTarget;
+    }
+}
+
+prefillProgressInputs();
+
 
 /* =========================
    BODY MEASUREMENTS
@@ -3355,7 +3435,7 @@ renderWeightChart();
 
 function getMeasurementHistory() {
     try {
-        const parsed = JSON.parse(localStorage.getItem("measurementHistory"));
+        const parsed = JSON.parse(safeStorageGet("measurementHistory"));
         return Array.isArray(parsed) ? parsed : [];
     } catch (e) {
         return [];
@@ -3456,7 +3536,7 @@ function saveMeasurements() {
     const history = getMeasurementHistory();
     history.push(entry);
     while (history.length > 60) history.shift();
-    localStorage.setItem("measurementHistory", JSON.stringify(history));
+    safeStorageSet("measurementHistory", JSON.stringify(history));
 
     const parts = [];
     if ("waist" in entry) parts.push(`Waist: <b>${entry.waist} cm</b>`);
@@ -3474,6 +3554,31 @@ function saveMeasurements() {
 }
 
 renderMeasurementCharts();
+
+// Same fix as prefillProgressInputs(): show the most recently logged
+// measurements instead of leaving the fields blank after a refresh.
+function prefillMeasurementInputs() {
+    const history = getMeasurementHistory();
+    if (!history.length) return;
+
+    const last = history[history.length - 1];
+
+    const waistInput = document.getElementById("measureWaist");
+    const chestInput = document.getElementById("measureChest");
+    const armsInput = document.getElementById("measureArms");
+
+    if (waistInput && !waistInput.value && typeof last.waist === "number") {
+        waistInput.value = last.waist;
+    }
+    if (chestInput && !chestInput.value && typeof last.chest === "number") {
+        chestInput.value = last.chest;
+    }
+    if (armsInput && !armsInput.value && typeof last.arms === "number") {
+        armsInput.value = last.arms;
+    }
+}
+
+prefillMeasurementInputs();
 
 
 /* =========================
@@ -3764,7 +3869,7 @@ function toggleTheme() {
     const current = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
     const next = current === "dark" ? "light" : "dark";
 
-    localStorage.setItem("fitTrainerTheme", next);
+    safeStorageSet("fitTrainerTheme", next);
     applyTheme(next);
 }
 
@@ -3775,7 +3880,7 @@ applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "dar
 if (window.matchMedia) {
     window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function(e) {
         // Only follow the OS if the user hasn't made an explicit choice.
-        if (!localStorage.getItem("fitTrainerTheme")) {
+        if (!safeStorageGet("fitTrainerTheme")) {
             applyTheme(e.matches ? "dark" : "light");
         }
     });

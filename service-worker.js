@@ -1,7 +1,10 @@
 // Bump this whenever you deploy changes so old caches get cleared out.
-// v4: rest timer, exercise logging + workout streak, body measurements,
-// custom foods. Still no new asset paths - everything lives in index.html.
-const CACHE_NAME = "fittrainer-cache-v4";
+// v5: bugfix - localStorage calls are now wrapped in safe try/catch
+// helpers (a blocked/unavailable localStorage no longer silently breaks
+// saving), and Current/Target Weight + measurement inputs are correctly
+// re-populated from storage on load (previously they went blank on every
+// refresh even though the underlying data was saved fine).
+const CACHE_NAME = "fittrainer-cache-v5";
 
 const APP_SHELL = [
   "./",
