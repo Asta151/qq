@@ -1,10 +1,8 @@
 // Bump this whenever you deploy changes so old caches get cleared out.
-// v5: bugfix - localStorage calls are now wrapped in safe try/catch
-// helpers (a blocked/unavailable localStorage no longer silently breaks
-// saving), and Current/Target Weight + measurement inputs are correctly
-// re-populated from storage on load (previously they went blank on every
-// refresh even though the underlying data was saved fine).
-const CACHE_NAME = "fittrainer-cache-v5";
+// v6: added a "Manage Data" section (Progress page) with a Clear All
+// Saved Data button - deletes every localStorage key the app uses and
+// reloads to a fresh state.
+const CACHE_NAME = "fittrainer-cache-v6";
 
 const APP_SHELL = [
   "./",

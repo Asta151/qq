@@ -2083,6 +2083,23 @@ Glasses: <span id="waterCount">0</span>/8
 
 </section>
 
+
+<section class="container">
+
+<h2 class="section-title"><span class="title-icon" style="background:#fee2e2">⚙️</span> Manage Data</h2>
+
+<div class="card">
+
+<p style="color:var(--text-secondary);font-size:13px;">
+Everything above (weights, measurements, water/workout streaks, custom foods) is saved only on this device, in this browser.
+</p>
+
+<button type="button" onclick="clearAllData()" style="margin-top:15px;background:#ef4444;">🗑 Clear All Saved Data</button>
+
+</div>
+
+</section>
+
 </div>
 
 
@@ -2227,6 +2244,44 @@ function safeStorageSet(key, value) {
         // for this session, it just won't persist.
         return false;
     }
+}
+
+function safeStorageRemove(key) {
+    if (!STORAGE_OK) return;
+    try {
+        localStorage.removeItem(key);
+    } catch (e) {
+        // Nothing to do - if it couldn't be set, it's already effectively gone.
+    }
+}
+
+// Every localStorage key this app writes to. Kept in one place so
+// clearAllData() (Progress page > Manage Data) can't miss one.
+const ALL_STORAGE_KEYS = [
+    "fitTrainerTheme",
+    "customFoods",
+    "exerciseLog",
+    "workoutStreak",
+    "lastWorkoutStreakDate",
+    "waterCount",
+    "lastWaterGoalDate",
+    "waterStreak",
+    "weightHistory",
+    "currentWeight",
+    "targetWeight",
+    "measurementHistory"
+];
+
+function clearAllData() {
+    if (!confirm("This will permanently delete everything saved on this device — weights, measurements, streaks, custom foods, water log. This can't be undone. Continue?")) {
+        return;
+    }
+
+    ALL_STORAGE_KEYS.forEach(safeStorageRemove);
+
+    // Full reload puts every part of the UI back to its default,
+    // empty state without needing to reset each one by hand.
+    location.reload();
 }
 
 if (!STORAGE_OK) {
