@@ -833,6 +833,155 @@ button:active {
     margin-top: 8px;
 }
 
+/* ============ MEAL BUILDER: food grid + cards ============ */
+
+.food-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.food-card {
+    background: var(--row-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    text-align: left;
+    cursor: pointer;
+    transition: transform .15s, border-color .15s, box-shadow .15s;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    font: inherit;
+    color: inherit;
+    width: 100%;
+}
+
+.food-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px var(--card-shadow);
+}
+
+.food-card:active {
+    transform: scale(.96);
+}
+
+.food-card .food-card-emoji {
+    font-size: 22px;
+}
+
+.food-card .food-card-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-heading);
+    line-height: 1.25;
+}
+
+.food-card .food-card-portion {
+    font-size: 10.5px;
+    color: var(--text-faint);
+}
+
+.food-card .food-card-macros {
+    font-size: 10.5px;
+    color: var(--text-secondary);
+}
+
+.food-card .food-card-cal {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent-dark);
+    margin-top: 2px;
+}
+
+.food-empty {
+    color: var(--text-secondary);
+    font-size: 13px;
+    padding: 10px 0;
+}
+
+/* ============ WEEKLY PLAN (goal-based) + SUPPLEMENTS ============ */
+
+.plan-day-card {
+    border-left: 4px solid var(--accent, #22c55e);
+    background: var(--row-bg);
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 12px;
+}
+
+.plan-day-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.plan-day-top .plan-day-name {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    color: var(--text-secondary);
+}
+
+.plan-day-top .plan-day-type {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-heading);
+}
+
+.plan-day-meta {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.plan-day-tips {
+    margin: 8px 0 0 18px;
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.supp-card {
+    background: var(--row-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.supp-card .supp-emoji {
+    font-size: 20px;
+    flex: none;
+}
+
+.supp-card .supp-name {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text-heading);
+}
+
+.supp-card .supp-dose {
+    font-size: 12px;
+    color: var(--accent-dark);
+    font-weight: 600;
+    margin-top: 1px;
+}
+
+.supp-card .supp-why {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 3px;
+}
+
 /* ============ CATEGORY FILTER CHIPS ============ */
 
 .chip-row {
@@ -896,6 +1045,33 @@ button:active {
     0% { box-shadow: 0 0 0 0 rgba(34,197,94,.6); }
     70% { box-shadow: 0 0 0 14px rgba(34,197,94,0); }
     100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+}
+
+/* ============ MACRO BARS (Calculator + Meal Builder) ============ */
+
+.macro-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.macro-bar-row .progress-bar {
+    margin-top: 0;
+    height: 10px;
+}
+
+.macro-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 5px;
+}
+
+.macro-bar-label span:last-child {
+    color: var(--text-secondary);
+    font-weight: 600;
 }
 
 .celebrate {
@@ -1622,7 +1798,14 @@ Your body can achieve what your mind believes.
 </select>
 </div>
 
+<div>
+<label>Body Fat % (optional)</label>
+<input type="number" id="bodyFat" placeholder="e.g. 18" min="3" max="60" step="0.5" inputmode="decimal">
 </div>
+
+</div>
+
+<p class="food-hint">Body fat % gives a more accurate protein target (lean body mass based) — leave blank to skip.</p>
 
 <button onclick="calculateFitness()">🧮 Calculate</button>
 
@@ -1671,6 +1854,24 @@ Your body can achieve what your mind believes.
 <div class="page-top-space"></div>
 
 <section class="container" style="margin-top:0;">
+
+<h2 class="section-title"><span class="title-icon">🎯</span> Weekly Plan For Your Goal</h2>
+
+<div class="card">
+
+<div id="weeklyPlanGoalNote" style="margin-bottom:14px;"></div>
+
+<div id="weeklyPlanList"></div>
+
+<h3 style="margin-top:20px;">💊 Suggested Supplements</h3>
+<div id="supplementList" style="margin-top:10px;"></div>
+
+</div>
+
+</section>
+
+
+<section class="container">
 
 <h2 class="section-title"><span class="title-icon">🏋️</span> Workout Planner</h2>
 
@@ -1880,6 +2081,46 @@ onkeyup="filterExercises()"
 </div>
 </section>
 
+
+<section class="container">
+
+<h2 class="section-title"><span class="title-icon" style="background:#fef2f2">🔥</span> Calories Burned Estimator</h2>
+
+<div class="card">
+
+<p style="color:var(--text-secondary);font-size:13px;margin-bottom:14px;">
+Estimate calories burned using the MET formula (calories = MET × weight × hours).
+</p>
+
+<div class="chip-row" id="exerciseBurnCategoryChips"></div>
+
+<div class="form-grid">
+
+<div>
+<label>Exercise</label>
+<select id="exerciseBurnName"></select>
+</div>
+
+<div>
+<label>Duration (minutes)</label>
+<input type="number" id="exerciseBurnMinutes" value="30" min="1" max="300" step="5" inputmode="numeric">
+</div>
+
+<div>
+<label>Your Weight (kg)</label>
+<input type="number" id="exerciseBurnWeight" placeholder="70" min="1" max="400" step="0.5" inputmode="decimal">
+</div>
+
+</div>
+
+<button onclick="calculateExerciseBurn()">🔥 Estimate Calories Burned</button>
+
+<div id="exerciseBurnResult"></div>
+
+</div>
+
+</section>
+
 </div>
 
 
@@ -1963,6 +2204,38 @@ Add foods that aren't in the list above — they'll appear in the Food dropdown 
 </div>
 </section>
 
+
+<section class="container">
+
+<h2 class="section-title"><span class="title-icon" style="background:#fff7ed">🍛</span> Meal Builder</h2>
+
+<div class="card">
+
+<p style="color:var(--text-secondary);font-size:13px;margin-bottom:14px;">
+Pick from common Indian foods (or your own from "My Foods" above), build up a meal, and see the running total against your daily calorie target.
+</p>
+
+<div class="chip-row" id="dietFilterChips"></div>
+<div class="chip-row" id="foodCategoryChips"></div>
+
+<div class="food-grid" id="foodGrid"></div>
+
+</div>
+
+<div class="card" id="mealSummaryCard" style="margin-top:16px;">
+
+<h3>🍽 Your Meal</h3>
+
+<div id="mealItemsList" style="margin-top:12px;"></div>
+
+<div id="mealTotalsBox" style="margin-top:16px;"></div>
+
+<button type="button" onclick="clearMeal()" style="margin-top:15px;background:var(--row-bg);color:var(--text);">🗑 Clear Meal</button>
+
+</div>
+
+</section>
+
 </div>
 
 
@@ -1979,12 +2252,12 @@ Add foods that aren't in the list above — they'll appear in the Food dropdown 
 
 <div class="card" id="waterCard">
 
-<p>Daily Goal: <b>8 glasses</b></p>
+<p id="waterGoalLabel">Daily Goal: <b>8 glasses</b></p>
 
 <div class="water" id="waterButtons"></div>
 
 <h3 style="margin-top:20px;">
-Glasses: <span id="waterCount">0</span>/8
+Glasses: <span id="waterCount">0</span>/<span id="waterTargetLabel">8</span>
 </h3>
 
 <div class="progress-bar">
@@ -2269,7 +2542,10 @@ const ALL_STORAGE_KEYS = [
     "weightHistory",
     "currentWeight",
     "targetWeight",
-    "measurementHistory"
+    "measurementHistory",
+    "fitTrainerProfile",
+    "dietPreference",
+    "mealBuilderItems"
 ];
 
 function clearAllData() {
@@ -2282,6 +2558,66 @@ function clearAllData() {
     // Full reload puts every part of the UI back to its default,
     // empty state without needing to reset each one by hand.
     location.reload();
+}
+
+
+/* =========================
+   SHARED PROFILE
+   Weight/height/age/goal etc. saved from the Calculator so other
+   pages (Water target, Weekly Plan, Exercise burn calc, Meal Builder)
+   can use the same numbers instead of asking again.
+========================= */
+
+function getProfile() {
+    try {
+        const parsed = JSON.parse(safeStorageGet("fitTrainerProfile"));
+        return parsed && typeof parsed === "object" ? parsed : {};
+    } catch (e) {
+        return {};
+    }
+}
+
+function saveProfile(fields) {
+    const profile = Object.assign(getProfile(), fields);
+    safeStorageSet("fitTrainerProfile", JSON.stringify(profile));
+    onProfileSaved();
+}
+
+// Re-renders whatever bits of the UI depend on the profile (called after
+// every calculateFitness(), and once on page load if a profile exists).
+function onProfileSaved() {
+    if (typeof renderWaterButtons === "function") renderWaterButtons();
+    if (typeof renderWeeklyPlan === "function") renderWeeklyPlan();
+    if (typeof prefillExerciseBurnWeight === "function") prefillExerciseBurnWeight();
+}
+
+// Fills the Calculator's inputs from a saved profile. Must run BEFORE
+// enhanceSelects() so gender/activity/goal (custom dropdowns) pick up
+// the right value on their first build.
+function prefillCalculatorInputs() {
+    const profile = getProfile();
+    if (!profile || !Object.keys(profile).length) return;
+
+    const setIfEmpty = function(id, value) {
+        const el = document.getElementById(id);
+        if (el && !el.value && value !== undefined && value !== null) {
+            el.value = value;
+        }
+    };
+
+    setIfEmpty("age", profile.age);
+    setIfEmpty("weight", profile.weight);
+    setIfEmpty("height", profile.height);
+    setIfEmpty("bodyFat", profile.bodyFat);
+
+    const genderEl = document.getElementById("gender");
+    if (genderEl && profile.gender) genderEl.value = profile.gender;
+
+    const activityEl = document.getElementById("activity");
+    if (activityEl && profile.activity) activityEl.value = String(profile.activity);
+
+    const goalEl = document.getElementById("goal");
+    if (goalEl && (profile.goal === 0 || profile.goal)) goalEl.value = String(profile.goal);
 }
 
 if (!STORAGE_OK) {
@@ -2442,6 +2778,7 @@ function calculateFitness() {
     const age = readNumber("age");
     const weight = readNumber("weight");
     const height = readNumber("height");
+    const bodyFat = readNumber("bodyFat"); // optional
 
     let activity = readNumber("activity");
     if (!Number.isFinite(activity) || activity <= 0) activity = 1.2;
@@ -2467,15 +2804,29 @@ function calculateFitness() {
     const tdee = bmr * activity;
     const calories = Math.max(tdee + goal, 0);
 
-    const protein = Math.round(weight * 1.8);
-    const fat = Math.round(weight * 0.8);
+    const hasBodyFat = Number.isFinite(bodyFat) && bodyFat > 0 && bodyFat < 75;
+    const lbm = hasBodyFat ? weight * (1 - bodyFat / 100) : null;
+
+    // Lean-mass-based protein target when body fat % is known (2.2g/kg LBM,
+    // roughly 1g/lb lean mass) - falls back to 2g/kg total bodyweight.
+    const protein = lbm ? Math.round(lbm * 2.2) : Math.round(weight * 2);
+    const fat = Math.round((calories * 0.25) / 9);
     const proteinCalories = protein * 4;
     const fatCalories = fat * 9;
     const carbCalories = Math.max(calories - proteinCalories - fatCalories, 0);
     const carbs = Math.round(carbCalories / 4);
+    const carbCaloriesActual = carbs * 4;
+
+    const macroTotalCal = proteinCalories + fatCalories + carbCaloriesActual || 1;
+    const pPct = Math.round((proteinCalories / macroTotalCal) * 100);
+    const fPct = Math.round((fatCalories / macroTotalCal) * 100);
+    const cPct = Math.max(0, 100 - pPct - fPct);
 
     const calPercent = Math.max(4, Math.min(100, Math.round((calories / (tdee || 1)) * 100)));
     const calOffset = RING_C - (calPercent / 100) * RING_C;
+
+    // Goal type feeds the Workout page's goal-based weekly plan + supplements.
+    const goalType = goal < 0 ? "loss" : (goal > 0 ? "gain" : "maintain");
 
     document.getElementById("fitnessResult").innerHTML = `
 
@@ -2509,11 +2860,22 @@ function calculateFitness() {
 
             <hr style="margin:20px 0;border-color:var(--border)">
 
-            <h3>Suggested Macros</h3>
+            <h3>Suggested Macros${hasBodyFat ? ' <span style="font-weight:400;font-size:12px;color:var(--text-secondary);">(using lean body mass)</span>' : ''}</h3>
 
-            <p>🥩 Protein: <b>${protein} g</b></p>
-            <p>🍚 Carbohydrates: <b>${carbs} g</b></p>
-            <p>🥑 Fat: <b>${fat} g</b></p>
+            <div class="macro-bars">
+                <div class="macro-bar-row">
+                    <div class="macro-bar-label"><span>🥩 Protein</span><span>${protein}g · ${pPct}%</span></div>
+                    <div class="progress-bar"><div class="progress-fill" style="width:${pPct}%;background:#2563eb;"></div></div>
+                </div>
+                <div class="macro-bar-row">
+                    <div class="macro-bar-label"><span>🍚 Carbohydrates</span><span>${carbs}g · ${cPct}%</span></div>
+                    <div class="progress-bar"><div class="progress-fill" style="width:${cPct}%;background:#ea580c;"></div></div>
+                </div>
+                <div class="macro-bar-row">
+                    <div class="macro-bar-label"><span>🥑 Fat</span><span>${fat}g · ${fPct}%</span></div>
+                    <div class="progress-bar"><div class="progress-fill" style="width:${fPct}%;background:#7c3aed;"></div></div>
+                </div>
+            </div>
 
         </div>
     `;
@@ -2522,6 +2884,19 @@ function calculateFitness() {
     animateNumber(document.getElementById("tdeeValue"), 0, Math.round(tdee), 700);
     animateNumber(document.getElementById("calRingValue"), 0, Math.round(calories), 800);
     animateRing(document.getElementById("calRingFill"), RING_C, calOffset);
+
+    saveProfile({
+        gender: gender,
+        age: age,
+        weight: weight,
+        height: height,
+        activity: activity,
+        goal: goal,
+        goalType: goalType,
+        bodyFat: hasBodyFat ? bodyFat : null,
+        tdee: Math.round(tdee),
+        targetCalories: Math.round(calories)
+    });
 }
 
 
@@ -2756,6 +3131,269 @@ function renderCustomFoodChips() {
 
 renderCustomFoodChips();
 
+
+/* =========================
+   MEAL BUILDER: Indian food database
+========================= */
+
+const FOOD_DB = [
+    // protein
+    { id: "f1", name: "Moong Dal", emoji: "🍲", cat: "protein", cal: 130, p: 9, c: 22, f: 1, portion: "1 katori (150g)", diet: ["veg", "vegan", "jain"] },
+    { id: "f2", name: "Masoor Dal", emoji: "🍲", cat: "protein", cal: 120, p: 8, c: 20, f: 1, portion: "1 katori (150g)", diet: ["veg", "vegan", "jain"] },
+    { id: "f3", name: "Paneer (grilled)", emoji: "🧀", cat: "protein", cal: 265, p: 18, c: 4, f: 20, portion: "100g", diet: ["veg", "jain"] },
+    { id: "f4", name: "Chicken Curry", emoji: "🍗", cat: "protein", cal: 180, p: 22, c: 5, f: 8, portion: "1 piece (120g)", diet: ["nonveg"] },
+    { id: "f5", name: "Egg Bhurji", emoji: "🥚", cat: "protein", cal: 160, p: 12, c: 4, f: 10, portion: "2 eggs", diet: ["veg"] },
+    { id: "f6", name: "Rajma", emoji: "🫘", cat: "protein", cal: 140, p: 10, c: 22, f: 1, portion: "1 katori (150g)", diet: ["veg", "vegan", "jain"] },
+    { id: "f7", name: "Chole", emoji: "🥘", cat: "protein", cal: 150, p: 8, c: 24, f: 3, portion: "1 katori (150g)", diet: ["veg", "vegan"] },
+    { id: "f8", name: "Fish Curry (Rohu)", emoji: "🐟", cat: "protein", cal: 140, p: 20, c: 4, f: 5, portion: "1 piece (120g)", diet: ["nonveg"] },
+    { id: "f9", name: "Dahi (Curd)", emoji: "🥛", cat: "protein", cal: 60, p: 4, c: 5, f: 2, portion: "1 katori (150g)", diet: ["veg", "jain"] },
+    { id: "f10", name: "Soya Chunks", emoji: "🟤", cat: "protein", cal: 170, p: 22, c: 12, f: 3, portion: "50g dry", diet: ["veg", "vegan"] },
+    { id: "f11", name: "Tofu Bhurji", emoji: "🟡", cat: "protein", cal: 130, p: 12, c: 5, f: 8, portion: "100g", diet: ["veg", "vegan"] },
+    { id: "f12", name: "Mutton Curry", emoji: "🍖", cat: "protein", cal: 210, p: 20, c: 4, f: 13, portion: "1 piece (120g)", diet: ["nonveg"] },
+    // carbs
+    { id: "f13", name: "Roti (Wheat)", emoji: "🫓", cat: "carbs", cal: 70, p: 3, c: 15, f: 1, portion: "1 medium (30g)", diet: ["veg", "vegan"] },
+    { id: "f14", name: "Brown Rice", emoji: "🍚", cat: "carbs", cal: 180, p: 4, c: 38, f: 1, portion: "1 katori cooked", diet: ["veg", "vegan", "jain"] },
+    { id: "f15", name: "White Rice", emoji: "🍚", cat: "carbs", cal: 200, p: 4, c: 44, f: 0, portion: "1 katori cooked", diet: ["veg", "vegan", "jain"] },
+    { id: "f16", name: "Poha", emoji: "🥣", cat: "carbs", cal: 250, p: 5, c: 45, f: 6, portion: "1 plate (200g)", diet: ["veg", "jain"] },
+    { id: "f17", name: "Upma", emoji: "🥣", cat: "carbs", cal: 200, p: 5, c: 35, f: 5, portion: "1 bowl (200g)", diet: ["veg", "jain"] },
+    { id: "f18", name: "Idli (plain)", emoji: "⚪", cat: "carbs", cal: 39, p: 2, c: 8, f: 0, portion: "1 idli (45g)", diet: ["veg", "vegan"] },
+    { id: "f19", name: "Dosa (plain)", emoji: "🥞", cat: "carbs", cal: 120, p: 3, c: 22, f: 2, portion: "1 medium", diet: ["veg", "vegan"] },
+    { id: "f20", name: "Banana", emoji: "🍌", cat: "carbs", cal: 89, p: 1, c: 23, f: 0, portion: "1 medium (100g)", diet: ["veg", "vegan", "jain"] },
+    { id: "f21", name: "Jowar Roti", emoji: "🫓", cat: "carbs", cal: 65, p: 2, c: 14, f: 1, portion: "1 roti (30g)", diet: ["veg", "vegan", "jain"] },
+    { id: "f22", name: "Bajra Roti", emoji: "🫓", cat: "carbs", cal: 60, p: 2, c: 13, f: 1, portion: "1 roti (28g)", diet: ["veg", "vegan", "jain"] },
+    // fats
+    { id: "f23", name: "Ghee", emoji: "🧈", cat: "fats", cal: 112, p: 0, c: 0, f: 13, portion: "1 tsp (13g)", diet: ["veg", "jain"] },
+    { id: "f24", name: "Coconut Chutney", emoji: "🥥", cat: "fats", cal: 80, p: 1, c: 5, f: 7, portion: "2 tbsp (40g)", diet: ["veg", "vegan", "jain"] },
+    { id: "f25", name: "Peanuts (roasted)", emoji: "🥜", cat: "fats", cal: 166, p: 7, c: 6, f: 14, portion: "30g handful", diet: ["veg", "vegan", "jain"] },
+    { id: "f26", name: "Almonds + Cashews", emoji: "🌰", cat: "fats", cal: 180, p: 5, c: 8, f: 16, portion: "30g handful", diet: ["veg", "vegan", "jain"] },
+    { id: "f27", name: "Flaxseed Chutney", emoji: "🌱", cat: "fats", cal: 90, p: 3, c: 4, f: 7, portion: "2 tbsp (20g)", diet: ["veg", "vegan", "jain"] },
+    // low-cal
+    { id: "f28", name: "Palak Sabzi", emoji: "🥬", cat: "lowcal", cal: 70, p: 3, c: 8, f: 3, portion: "1 katori (150g)", diet: ["veg", "vegan"] },
+    { id: "f29", name: "Veg Soup", emoji: "🍜", cat: "lowcal", cal: 50, p: 2, c: 8, f: 1, portion: "1 bowl (250ml)", diet: ["veg", "vegan", "jain"] },
+    { id: "f30", name: "Cucumber Raita", emoji: "🥒", cat: "lowcal", cal: 55, p: 3, c: 6, f: 2, portion: "1 katori (150g)", diet: ["veg", "jain"] },
+    { id: "f31", name: "Moong Sprouts", emoji: "🌱", cat: "lowcal", cal: 100, p: 9, c: 17, f: 1, portion: "1 katori (100g)", diet: ["veg", "vegan", "jain"] },
+    { id: "f32", name: "Masala Buttermilk", emoji: "🥤", cat: "lowcal", cal: 35, p: 2, c: 5, f: 1, portion: "1 glass (250ml)", diet: ["veg", "jain"] },
+    { id: "f33", name: "Lauki Sabzi", emoji: "🥗", cat: "lowcal", cal: 55, p: 1, c: 10, f: 1, portion: "1 katori (150g)", diet: ["veg", "vegan", "jain"] },
+    { id: "f34", name: "Karela Sabzi", emoji: "🥦", cat: "lowcal", cal: 45, p: 2, c: 8, f: 1, portion: "1 katori (150g)", diet: ["veg", "vegan", "jain"] },
+    // restaurant
+    { id: "f35", name: "Chicken Biryani", emoji: "🍛", cat: "restaurant", cal: 450, p: 22, c: 55, f: 14, portion: "1 plate (350g)", diet: ["nonveg"] },
+    { id: "f36", name: "Butter Chicken", emoji: "🍗", cat: "restaurant", cal: 290, p: 24, c: 12, f: 16, portion: "1 serving (200g)", diet: ["nonveg"] },
+    { id: "f37", name: "Dal Makhani", emoji: "🍲", cat: "restaurant", cal: 220, p: 10, c: 24, f: 10, portion: "1 katori (200g)", diet: ["veg"] },
+    { id: "f38", name: "Paneer Butter Masala", emoji: "🧀", cat: "restaurant", cal: 310, p: 14, c: 16, f: 22, portion: "1 serving (200g)", diet: ["veg"] },
+    { id: "f39", name: "Veg Biryani", emoji: "🍛", cat: "restaurant", cal: 320, p: 8, c: 58, f: 8, portion: "1 plate (350g)", diet: ["veg", "vegan"] },
+    { id: "f40", name: "Naan (plain)", emoji: "🫓", cat: "restaurant", cal: 260, p: 8, c: 48, f: 5, portion: "1 large naan", diet: ["veg"] },
+    { id: "f41", name: "Samosa (1 pc)", emoji: "🔺", cat: "restaurant", cal: 150, p: 3, c: 20, f: 7, portion: "1 piece (80g)", diet: ["veg", "jain"] },
+    { id: "f42", name: "Lassi (sweet)", emoji: "🥛", cat: "restaurant", cal: 180, p: 5, c: 30, f: 5, portion: "1 glass (300ml)", diet: ["veg", "jain"] }
+];
+
+const FOOD_CATEGORIES = [
+    { key: "all", label: "All" },
+    { key: "protein", label: "🥩 Protein" },
+    { key: "carbs", label: "🍚 Carbs" },
+    { key: "fats", label: "🥑 Fats" },
+    { key: "lowcal", label: "🥬 Low-Cal" },
+    { key: "restaurant", label: "🍛 Restaurant" },
+    { key: "custom", label: "⭐ My Foods" }
+];
+
+const DIET_FILTERS = [
+    { key: "all", label: "All" },
+    { key: "veg", label: "🟢 Veg" },
+    { key: "vegan", label: "🌱 Vegan" },
+    { key: "jain", label: "🔺 Jain" },
+    { key: "nonveg", label: "🔴 Non-Veg" }
+];
+
+let activeFoodCategory = "protein";
+let activeDietFilter = safeStorageGet("dietPreference") || "all";
+
+function setDietFilter(key) {
+    activeDietFilter = key;
+    safeStorageSet("dietPreference", key);
+    renderDietFilterChips();
+    renderFoodGrid();
+}
+
+function setFoodCategory(key) {
+    activeFoodCategory = key;
+    renderFoodCategoryChips();
+    renderFoodGrid();
+}
+
+function renderDietFilterChips() {
+    const container = document.getElementById("dietFilterChips");
+    if (!container) return;
+
+    container.innerHTML = DIET_FILTERS.map(function(d) {
+        const active = d.key === activeDietFilter ? " active" : "";
+        return `<button type="button" class="chip${active}" onclick="setDietFilter('${d.key}')">${d.label}</button>`;
+    }).join("");
+}
+
+function renderFoodCategoryChips() {
+    const container = document.getElementById("foodCategoryChips");
+    if (!container) return;
+
+    container.innerHTML = FOOD_CATEGORIES.map(function(cat) {
+        const active = cat.key === activeFoodCategory ? " active" : "";
+        return `<button type="button" class="chip${active}" onclick="setFoodCategory('${cat.key}')">${cat.label}</button>`;
+    }).join("");
+}
+
+function renderFoodGrid() {
+    const grid = document.getElementById("foodGrid");
+    if (!grid) return;
+
+    let items;
+
+    if (activeFoodCategory === "custom") {
+        items = getCustomFoods().map(function(f) {
+            return { id: f.id, name: f.name, emoji: "⭐", cal: f.calories, p: null, c: null, f: null, portion: "100g", diet: ["all"], custom: true };
+        });
+    } else {
+        items = FOOD_DB.filter(function(item) {
+            const catMatch = activeFoodCategory === "all" || item.cat === activeFoodCategory;
+            const dietMatch = activeDietFilter === "all" || item.diet.indexOf(activeDietFilter) !== -1;
+            return catMatch && dietMatch;
+        });
+    }
+
+    if (!items.length) {
+        grid.innerHTML = activeFoodCategory === "custom"
+            ? `<p class="food-empty">No custom foods yet — add one in "My Foods" above.</p>`
+            : `<p class="food-empty">No foods match this filter.</p>`;
+        return;
+    }
+
+    grid.innerHTML = items.map(function(item) {
+        const safeName = escapeHtml(item.name);
+        const macros = item.custom
+            ? "per 100g"
+            : `${item.p}p · ${item.c}c · ${item.f}f`;
+
+        return `
+            <button type="button" class="food-card" onclick="addToMeal('${item.id}', ${item.custom ? "true" : "false"})">
+                <span class="food-card-emoji">${item.emoji}</span>
+                <span class="food-card-name">${safeName}</span>
+                <span class="food-card-portion">${escapeHtml(item.portion)}</span>
+                <span class="food-card-macros">${macros}</span>
+                <span class="food-card-cal">${item.cal} kcal</span>
+            </button>
+        `;
+    }).join("");
+}
+
+function getMealItems() {
+    try {
+        const parsed = JSON.parse(safeStorageGet("mealBuilderItems"));
+        return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+        return [];
+    }
+}
+
+function saveMealItems(items) {
+    safeStorageSet("mealBuilderItems", JSON.stringify(items));
+}
+
+function addToMeal(itemId, isCustom) {
+    const source = isCustom
+        ? getCustomFoods().find(function(f) { return f.id === itemId; })
+        : FOOD_DB.find(function(f) { return f.id === itemId; });
+
+    if (!source) return;
+
+    const items = getMealItems();
+    items.push({
+        uid: "m" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+        name: source.name,
+        emoji: isCustom ? "⭐" : source.emoji,
+        cal: isCustom ? source.calories : source.cal,
+        p: isCustom ? null : source.p,
+        c: isCustom ? null : source.c,
+        f: isCustom ? null : source.f,
+        portion: isCustom ? "100g" : source.portion
+    });
+
+    saveMealItems(items);
+    renderMeal();
+}
+
+function removeFromMeal(uid) {
+    const items = getMealItems().filter(function(item) { return item.uid !== uid; });
+    saveMealItems(items);
+    renderMeal();
+}
+
+function clearMeal() {
+    saveMealItems([]);
+    renderMeal();
+}
+
+function renderMeal() {
+    const items = getMealItems();
+
+    const listEl = document.getElementById("mealItemsList");
+    const totalsEl = document.getElementById("mealTotalsBox");
+    if (!listEl || !totalsEl) return;
+
+    if (!items.length) {
+        listEl.innerHTML = `<p class="food-empty">Nothing added yet — tap a food above to add it.</p>`;
+        totalsEl.innerHTML = "";
+        return;
+    }
+
+    listEl.innerHTML = items.map(function(item) {
+        return `
+            <div class="workout-row" style="margin-bottom:8px;">
+                <span>${item.emoji} ${escapeHtml(item.name)} <span style="color:var(--text-faint);font-size:11.5px;">(${escapeHtml(item.portion)})</span></span>
+                <div class="row-actions">
+                    <span class="set-badge">${item.cal} kcal</span>
+                    <button type="button" class="row-action-btn" onclick="removeFromMeal('${item.uid}')" aria-label="Remove ${escapeHtml(item.name)}">✕</button>
+                </div>
+            </div>
+        `;
+    }).join("");
+
+    const totals = items.reduce(function(acc, item) {
+        acc.cal += item.cal || 0;
+        acc.p += item.p || 0;
+        acc.c += item.c || 0;
+        acc.f += item.f || 0;
+        return acc;
+    }, { cal: 0, p: 0, c: 0, f: 0 });
+
+    const profile = getProfile();
+    const target = profile.targetCalories;
+    const pctOfTarget = target ? Math.min(100, Math.round((totals.cal / target) * 100)) : null;
+
+    totalsEl.innerHTML = `
+        <div class="result">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;">
+                <span style="font-size:13px;font-weight:700;color:var(--text-secondary);">TOTAL CALORIES</span>
+                <span class="metric" style="font-size:22px;">${Math.round(totals.cal)} kcal</span>
+            </div>
+            ${target ? `
+                <div class="progress-bar" style="margin-top:10px;">
+                    <div class="progress-fill" style="width:${pctOfTarget}%;"></div>
+                </div>
+                <p style="font-size:12px;color:var(--text-secondary);margin-top:6px;">${pctOfTarget}% of your ${target} kcal daily target</p>
+            ` : `<p style="font-size:12px;color:var(--text-secondary);margin-top:8px;">Set a daily target on the Calculator page to see % progress.</p>`}
+            <p style="margin-top:12px;">🥩 Protein: <b>${Math.round(totals.p)} g</b> &nbsp; 🍚 Carbs: <b>${Math.round(totals.c)} g</b> &nbsp; 🥑 Fat: <b>${Math.round(totals.f)} g</b></p>
+        </div>
+    `;
+}
+
+renderDietFilterChips();
+renderFoodCategoryChips();
+renderFoodGrid();
+renderMeal();
+
+
+/* =========================
+   EXERCISE LIBRARY: SEARCH + FILTER
+========================= */
+
 let activeCategory = "all";
 
 function filterExercises() {
@@ -2799,6 +3437,213 @@ function setCategory(cat, btn) {
 }
 
 filterExercises();
+
+
+/* =========================
+   GOAL-BASED WEEKLY PLAN + SUPPLEMENTS
+   (driven by the goal saved from the Calculator page)
+========================= */
+
+const WEEK_PLANS = {
+    loss: [
+        { day: "Mon / Thu", type: "Strength Training", emoji: "🏋️", dur: "45 min", cals: "200–280", tips: ["Compound lifts: squats, deadlifts, rows", "3–4 sets × 10–12 reps, 60 sec rest", "Preserves muscle while cutting fat"] },
+        { day: "Tue / Fri", type: "HIIT Cardio", emoji: "🔥", dur: "25 min", cals: "250–350", tips: ["20 sec on / 10 sec off (Tabata)", "Burpees, high knees, jumping jacks", "After-burn lasts 24–48 hrs post session"] },
+        { day: "Wed / Sat", type: "Brisk Walk", emoji: "🚶", dur: "45–60 min", cals: "150–220", tips: ["Heart rate 50–65% of max", "Burns fat without cortisol spike", "Great for active recovery"] },
+        { day: "Sun", type: "Rest / Mobility", emoji: "🧘", dur: "20 min", cals: "50–80", tips: ["Yoga or stretching", "Essential for muscle repair and recovery"] }
+    ],
+    maintain: [
+        { day: "Mon / Wed / Fri", type: "Full Body Strength", emoji: "💪", dur: "45 min", cals: "200–270", tips: ["Push / pull / legs", "3 sets × 10–15 reps", "Progressive overload each week"] },
+        { day: "Tue / Thu", type: "Cardio", emoji: "🏃", dur: "30 min", cals: "200–300", tips: ["Run, cycle, swim or play sport", "Moderate pace — can hold conversation"] },
+        { day: "Sat", type: "Sport / Fun", emoji: "⚽", dur: "60 min", cals: "300–450", tips: ["Cricket, badminton, football, hiking", "Keep fitness enjoyable long-term"] },
+        { day: "Sun", type: "Rest", emoji: "😴", dur: "—", cals: "—", tips: ["Full recovery", "Meal prep for the week ahead"] }
+    ],
+    gain: [
+        { day: "Mon", type: "Push (Chest/Shoulders/Triceps)", emoji: "🏋️", dur: "55 min", cals: "220–280", tips: ["Bench press, overhead press, flyes", "4 sets × 8–10 reps, 90 sec rest"] },
+        { day: "Tue", type: "Pull (Back/Biceps)", emoji: "💪", dur: "55 min", cals: "200–260", tips: ["Pull-ups, barbell rows, face pulls", "Full range of motion on every rep"] },
+        { day: "Thu", type: "Legs (Quads/Hamstrings/Glutes)", emoji: "🦵", dur: "60 min", cals: "280–360", tips: ["Squats, Romanian deadlifts, leg press", "Largest muscles = biggest hormonal response"] },
+        { day: "Fri", type: "Upper Volume", emoji: "🔁", dur: "50 min", cals: "200–250", tips: ["3 sets × 12–15 reps, higher volume", "Focus on mind-muscle connection"] },
+        { day: "Wed / Sat / Sun", type: "Rest / Light Cardio", emoji: "🚶", dur: "20–30 min", cals: "100–150", tips: ["Walk only — too much cardio burns your bulk calories", "Prioritise sleep for muscle growth"] }
+    ]
+};
+
+const SUPPS = {
+    loss: [
+        { name: "Whey Protein", dose: "25–30g post workout", why: "Hits protein target without extra calories", emoji: "🥤" },
+        { name: "Creatine Monohydrate", dose: "5g/day", why: "Preserves strength and muscle during a cut", emoji: "⚡" },
+        { name: "Green Tea Extract / Caffeine", dose: "200mg caffeine pre-workout", why: "Mild fat oxidation boost + energy for training", emoji: "🍵" },
+        { name: "Omega-3 Fish Oil", dose: "1–2g EPA+DHA daily", why: "Anti-inflammatory, supports fat metabolism", emoji: "🐟" }
+    ],
+    maintain: [
+        { name: "Whey Protein", dose: "25g on training days", why: "Convenient protein top-up", emoji: "🥤" },
+        { name: "Creatine Monohydrate", dose: "5g/day", why: "Well-researched performance enhancer", emoji: "⚡" },
+        { name: "Vitamin D3 + K2", dose: "2000 IU D3 daily", why: "Most Indians are deficient; vital for muscle function", emoji: "☀️" },
+        { name: "Magnesium Glycinate", dose: "300mg before bed", why: "Better sleep quality and muscle recovery", emoji: "😴" }
+    ],
+    gain: [
+        { name: "Whey Protein", dose: "30–40g within 2 hrs of training", why: "Muscle protein synthesis window", emoji: "🥤" },
+        { name: "Creatine Monohydrate", dose: "5g/day (no loading needed)", why: "#1 evidence-based muscle builder", emoji: "⚡" },
+        { name: "Mass Gainer (if needed)", dose: "1 scoop on hard-to-eat days", why: "Easy 400–600 kcal when appetite is low", emoji: "🍫" },
+        { name: "Ashwagandha (KSM-66)", dose: "600mg/day", why: "Reduces cortisol, improves strength gains", emoji: "🌿" },
+        { name: "Vitamin D3 + K2", dose: "2000 IU daily", why: "Testosterone support + bone health", emoji: "☀️" }
+    ]
+};
+
+const GOAL_TYPE_LABELS = { loss: "Losing Weight", maintain: "Maintaining Weight", gain: "Gaining Weight" };
+
+function renderWeeklyPlan() {
+    const noteEl = document.getElementById("weeklyPlanGoalNote");
+    const listEl = document.getElementById("weeklyPlanList");
+    const suppEl = document.getElementById("supplementList");
+    if (!noteEl || !listEl || !suppEl) return;
+
+    const profile = getProfile();
+    const goalType = profile.goalType || "maintain";
+
+    noteEl.innerHTML = profile.goalType
+        ? `<p style="font-size:13px;color:var(--text-secondary);">Based on your goal on the Calculator page: <b style="color:var(--text-heading);">${GOAL_TYPE_LABELS[goalType]}</b></p>`
+        : `<p style="font-size:13px;color:var(--text-secondary);">Showing the "Maintain" plan by default — set a goal on the Calculator page to personalise this.</p>`;
+
+    listEl.innerHTML = WEEK_PLANS[goalType].map(function(row) {
+        return `
+            <div class="plan-day-card" style="--accent:${goalType === 'loss' ? '#ea580c' : goalType === 'gain' ? '#2563eb' : '#16a34a'}">
+                <div class="plan-day-top">
+                    <span class="plan-day-name">${row.day}</span>
+                    <span class="plan-day-meta">${row.dur}${row.cals !== "—" ? " · " + row.cals + " kcal" : ""}</span>
+                </div>
+                <div class="plan-day-type">${row.emoji} ${row.type}</div>
+                <ul class="plan-day-tips">
+                    ${row.tips.map(function(tip) { return `<li>${tip}</li>`; }).join("")}
+                </ul>
+            </div>
+        `;
+    }).join("");
+
+    suppEl.innerHTML = SUPPS[goalType].map(function(s) {
+        return `
+            <div class="supp-card">
+                <span class="supp-emoji">${s.emoji}</span>
+                <div>
+                    <div class="supp-name">${s.name}</div>
+                    <div class="supp-dose">${s.dose}</div>
+                    <div class="supp-why">${s.why}</div>
+                </div>
+            </div>
+        `;
+    }).join("");
+}
+
+renderWeeklyPlan();
+
+
+/* =========================
+   CALORIES BURNED ESTIMATOR (MET-based)
+========================= */
+
+const EXERCISES = [
+    { name: "Brisk Walking", emoji: "🚶", metFactor: 3.5, cat: "cardio" },
+    { name: "Running (8 km/h)", emoji: "🏃", metFactor: 8.0, cat: "cardio" },
+    { name: "Cycling (moderate)", emoji: "🚴", metFactor: 6.0, cat: "cardio" },
+    { name: "Swimming", emoji: "🏊", metFactor: 7.0, cat: "cardio" },
+    { name: "HIIT", emoji: "🔥", metFactor: 10.0, cat: "cardio" },
+    { name: "Jump Rope", emoji: "⚡", metFactor: 11.0, cat: "cardio" },
+    { name: "Yoga", emoji: "🧘", metFactor: 2.5, cat: "flex" },
+    { name: "Strength Training", emoji: "🏋️", metFactor: 5.0, cat: "strength" },
+    { name: "Cricket", emoji: "🏏", metFactor: 5.0, cat: "sport" },
+    { name: "Badminton", emoji: "🏸", metFactor: 5.5, cat: "sport" },
+    { name: "Football", emoji: "⚽", metFactor: 7.0, cat: "sport" },
+    { name: "Kabaddi", emoji: "🤼", metFactor: 7.5, cat: "sport" },
+    { name: "Dancing", emoji: "💃", metFactor: 5.0, cat: "sport" }
+];
+
+const EXERCISE_BURN_CATEGORIES = [
+    { key: "all", label: "All" },
+    { key: "cardio", label: "🏃 Cardio" },
+    { key: "strength", label: "🏋️ Strength" },
+    { key: "sport", label: "⚽ Sport" },
+    { key: "flex", label: "🧘 Flexibility" }
+];
+
+let activeExerciseBurnCategory = "all";
+
+function setExerciseBurnCategory(key) {
+    activeExerciseBurnCategory = key;
+    renderExerciseBurnCategoryChips();
+    populateExerciseBurnSelect();
+}
+
+function renderExerciseBurnCategoryChips() {
+    const container = document.getElementById("exerciseBurnCategoryChips");
+    if (!container) return;
+
+    container.innerHTML = EXERCISE_BURN_CATEGORIES.map(function(cat) {
+        const active = cat.key === activeExerciseBurnCategory ? " active" : "";
+        return `<button type="button" class="chip${active}" onclick="setExerciseBurnCategory('${cat.key}')">${cat.label}</button>`;
+    }).join("");
+}
+
+function populateExerciseBurnSelect() {
+    const select = document.getElementById("exerciseBurnName");
+    if (!select) return;
+
+    const filtered = EXERCISES.filter(function(ex) {
+        return activeExerciseBurnCategory === "all" || ex.cat === activeExerciseBurnCategory;
+    });
+
+    const previousValue = select.value;
+    select.innerHTML = filtered.map(function(ex) {
+        return `<option value="${ex.name}">${ex.emoji} ${ex.name}</option>`;
+    }).join("");
+
+    const stillExists = filtered.some(function(ex) { return ex.name === previousValue; });
+    if (stillExists) select.value = previousValue;
+
+    enhanceSelect(select);
+}
+
+function prefillExerciseBurnWeight() {
+    const input = document.getElementById("exerciseBurnWeight");
+    if (!input || input.value) return;
+
+    const profile = getProfile();
+    if (Number.isFinite(profile.weight) && profile.weight > 0) {
+        input.value = profile.weight;
+    }
+}
+
+function calculateExerciseBurn() {
+    const name = document.getElementById("exerciseBurnName").value;
+    const minutes = readNumber("exerciseBurnMinutes");
+    const weight = readNumber("exerciseBurnWeight");
+
+    const exercise = EXERCISES.find(function(ex) { return ex.name === name; });
+
+    if (!exercise) {
+        showError("exerciseBurnResult", "Please choose an exercise.");
+        return;
+    }
+
+    if (!Number.isFinite(minutes) || minutes <= 0 ||
+        !Number.isFinite(weight) || weight <= 0) {
+        showError("exerciseBurnResult", "Please enter a valid duration and weight.");
+        return;
+    }
+
+    // MET formula: calories = MET x weight(kg) x duration(hours)
+    const calories = exercise.metFactor * weight * (minutes / 60);
+
+    document.getElementById("exerciseBurnResult").innerHTML = `
+        <div class="result">
+            <p>${exercise.emoji} ${exercise.name} · ${minutes} min</p>
+            <div class="metric"><span id="exerciseBurnValue">0</span> kcal burned</div>
+        </div>
+    `;
+
+    animateNumber(document.getElementById("exerciseBurnValue"), 0, Math.round(calories), 600);
+}
+
+renderExerciseBurnCategoryChips();
+populateExerciseBurnSelect();
+prefillExerciseBurnWeight();
 
 
 /* =========================
@@ -3165,14 +4010,34 @@ document.getElementById("restTimerModal").addEventListener("click", function(e) 
 let waterCount =
     Number(safeStorageGet("waterCount")) || 0;
 
-function createWaterButtons() {
+// 35ml per kg of bodyweight (rounded up to whole glasses of 250ml) once a
+// profile weight is known; falls back to the classic "8 glasses" default.
+function getWaterTargetGlasses() {
+    const profile = getProfile();
+    const weight = profile.weight;
 
-    let container =
-        document.getElementById("waterButtons");
+    if (Number.isFinite(weight) && weight > 0) {
+        const targetMl = weight * 35;
+        return Math.max(4, Math.ceil(targetMl / 250));
+    }
+
+    return 8;
+}
+
+function renderWaterButtons() {
+
+    const container = document.getElementById("waterButtons");
+    if (!container) return;
+
+    const target = getWaterTargetGlasses();
+
+    // Don't let a shrinking target (e.g. weight lowered) leave the count
+    // showing more glasses filled than now exist.
+    if (waterCount > target) waterCount = target;
 
     container.innerHTML = "";
 
-    for (let i = 1; i <= 8; i++) {
+    for (let i = 1; i <= target; i++) {
 
         let button =
             document.createElement("button");
@@ -3185,8 +4050,10 @@ function createWaterButtons() {
 
         button.onclick = function() {
 
+            const currentTarget = getWaterTargetGlasses();
+
             // Clicking the currently-topmost filled glass again resets to 0.
-            const reachedGoal = waterCount !== 8 && i === 8;
+            const reachedGoal = waterCount !== currentTarget && i === currentTarget;
             waterCount = (waterCount === i) ? 0 : i;
 
             safeStorageSet(
@@ -3196,7 +4063,7 @@ function createWaterButtons() {
 
             updateWater();
 
-            if (reachedGoal && waterCount === 8) {
+            if (reachedGoal && waterCount === currentTarget) {
                 handleWaterGoalHit();
             }
 
@@ -3204,24 +4071,34 @@ function createWaterButtons() {
 
         container.appendChild(button);
     }
+
+    updateWater();
 }
 
 function updateWater() {
 
-    document.getElementById("waterCount")
-        .innerText = waterCount;
+    const target = getWaterTargetGlasses();
 
-    document.getElementById("waterProgress")
-        .style.width =
-        (waterCount / 8 * 100) + "%";
+    const countEl = document.getElementById("waterCount");
+    const targetLabelEl = document.getElementById("waterTargetLabel");
+    const goalLabelEl = document.getElementById("waterGoalLabel");
+    const progressEl = document.getElementById("waterProgress");
+
+    if (countEl) countEl.innerText = waterCount;
+    if (targetLabelEl) targetLabelEl.innerText = target;
+
+    if (goalLabelEl) {
+        goalLabelEl.innerHTML = `Daily Goal: <b>${target} glasses</b> <span style="color:var(--text-secondary);font-weight:400;">(~${(target * 250 / 1000).toFixed(2)}L)</span>`;
+    }
+
+    if (progressEl) progressEl.style.width = (waterCount / target * 100) + "%";
 
     document.querySelectorAll("#waterButtons button").forEach(function(btn) {
         btn.classList.toggle("filled", Number(btn.dataset.index) <= waterCount);
     });
 }
 
-createWaterButtons();
-updateWater();
+renderWaterButtons();
 
 
 /* =========================
@@ -3827,6 +4704,7 @@ function enhanceSelects() {
 }
 
 loadCustomFoodsIntoSelect();
+prefillCalculatorInputs();
 enhanceSelects();
 
 
@@ -3853,7 +4731,10 @@ function enhanceSteppers() {
         targetWeight:  { step: 0.5, min: 1,   max: 400 },
         measureWaist:  { step: 0.5, min: 30,  max: 200 },
         measureChest:  { step: 0.5, min: 30,  max: 200 },
-        measureArms:   { step: 0.5, min: 15,  max: 100 }
+        measureArms:   { step: 0.5, min: 15,  max: 100 },
+        bodyFat:       { step: 0.5, min: 3,   max: 60 },
+        exerciseBurnMinutes: { step: 5,   min: 1,   max: 300 },
+        exerciseBurnWeight:  { step: 0.5, min: 1,   max: 400 }
     };
 
     Object.keys(config).forEach(function(id) {

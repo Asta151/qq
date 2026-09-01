@@ -1,8 +1,12 @@
 // Bump this whenever you deploy changes so old caches get cleared out.
-// v6: added a "Manage Data" section (Progress page) with a Clear All
-// Saved Data button - deletes every localStorage key the app uses and
-// reloads to a fresh state.
-const CACHE_NAME = "fittrainer-cache-v6";
+// v7: merged in the old React prototype's data/features - Body Fat % ->
+// lean-mass protein calc, macro bars, a shared "profile" (weight/goal/etc
+// saved from the Calculator and reused elsewhere), a dynamic water target
+// (35ml/kg instead of a fixed 8 glasses), an Indian food database + Meal
+// Builder with veg/vegan/jain/non-veg filtering, a goal-based Weekly Plan
+// + Supplements section, and a MET-formula Calories Burned Estimator.
+// Still no new asset paths - everything lives in index.html.
+const CACHE_NAME = "fittrainer-cache-v7";
 
 const APP_SHELL = [
   "./",
